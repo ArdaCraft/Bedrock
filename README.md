@@ -17,6 +17,7 @@ Drop into your `mods` folder, set any permissions, and enjoy.
 - `/afk` - Toggle afk.
 - `/back` - Teleport to your last death location.
 - `/broadcast (message)` - Broadcast a message to all players.
+- `/(clear|ci|clearinv|clearinventory) (player)` - Clear your or another player's inventory.
 - `/delhome (name)` - Delete a home.
 - `/delwarp (name)` - Delete a warp.
 - `/feed (player)` - Feed a player or yourself.
@@ -63,6 +64,8 @@ Drop into your `mods` folder, set any permissions, and enjoy.
 - `bedrock.afk.exempt` - Exempted from AFK kicks.
 - `bedrock.back` - Teleport to your last death location.
 - `bedrock.broadcast` - Broadcast messages.
+- `bedrock.clearinventory.others` - Clear another player's inventory.
+- `bedrock.clearinventory.use` - Clear your own inventory.
 - `bedrock.delhome` - Delete a warp.
 - `bedrock.feed.use` - Feed self.
 - `bedrock.feed.others` - Feed others.

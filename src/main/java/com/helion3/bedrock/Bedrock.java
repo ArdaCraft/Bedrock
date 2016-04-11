@@ -88,6 +88,7 @@ public class Bedrock {
         game.getCommandManager().register(this, BackCommand.getCommand(), "back");
         game.getCommandManager().register(this, BedrockCommands.getCommand(), "br", "bedrock");
         game.getCommandManager().register(this, BroadcastCommand.getCommand(), "broadcast");
+        game.getCommandManager().register(this, ClearInventoryCommand.getCommand(), "clear", "ci", "clearinventory", "clearinv");
         game.getCommandManager().register(this, DeleteHomeCommand.getCommand(), "delhome");
         game.getCommandManager().register(this, DeleteWarpCommand.getCommand(), "delwarp");
         game.getCommandManager().register(this, FeedCommand.getCommand(), "feed");
