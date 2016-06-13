@@ -46,7 +46,7 @@ public class MoveListener {
         }
     }
 
-    @Listener (order = Order.LAST)
+    @Listener (order = Order.POST)
     public void onPlayerTeleport(DisplaceEntityEvent.Teleport event, @First Player player) {
     	// Ignore event if the teleport has been caused by the /return command itself
     	TransientData data = Bedrock.getPlayerConfigManager().getPlayerConfig(player).getTransientData();
