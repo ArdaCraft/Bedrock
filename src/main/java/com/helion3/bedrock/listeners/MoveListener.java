@@ -23,18 +23,16 @@
  */
 package com.helion3.bedrock.listeners;
 
+import com.helion3.bedrock.Bedrock;
+import com.helion3.bedrock.util.BoundedDeque;
+import com.helion3.bedrock.util.TransientData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.entity.DisplaceEntityEvent;
-import org.spongepowered.api.event.filter.cause.Root;
+import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-
-import com.helion3.bedrock.Bedrock;
-import com.helion3.bedrock.commands.ReturnCommand;
-import com.helion3.bedrock.util.BoundedDeque;
-import com.helion3.bedrock.util.TransientData;
 
 public class MoveListener {
     @Listener
@@ -48,15 +46,15 @@ public class MoveListener {
         }
     }
 
-    @Listener (order = Order.POST)
-    public void onPlayerTeleport(DisplaceEntityEvent.Teleport event, @Root Player player) {
+    @Listener (order = Order.LAST)
+    public void onPlayerTeleport(DisplaceEntityEvent.Teleport event, @First Player player) {
     	// Ignore event if the teleport has been caused by the /return command itself
-    	if (event.getCause().containsNamed(ReturnCommand.NAMED)) {
-    		return;
-    	}
     	TransientData data = Bedrock.getPlayerConfigManager().getPlayerConfig(player).getTransientData();
+        if (data.remove("teleport.return")) {
+            return;
+        }
     	int size = Bedrock.getConfig().getNode("return", "historySize").getInt();
-    	BoundedDeque<Location<World>> history = data.get("tphistory", () -> new BoundedDeque<>(size));
+    	BoundedDeque<Location<World>> history = data.get("teleport.history", () -> new BoundedDeque<>(size));
     	history.add(event.getFromTransform().getLocation());
     	history.add(event.getToTransform().getLocation());
     }

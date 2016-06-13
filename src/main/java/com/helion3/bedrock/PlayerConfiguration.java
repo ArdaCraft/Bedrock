@@ -23,6 +23,7 @@
  */
 package com.helion3.bedrock;
 
+import com.helion3.bedrock.util.TransientData;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -33,11 +34,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-import com.helion3.bedrock.util.TransientData;
-
 public class PlayerConfiguration {
     private ConfigurationLoader<CommentedConfigurationNode> configLoader;
-    private ConfigurationNode rootNode = null;;
+    private ConfigurationNode rootNode = null;
     private final TransientData transientData = new TransientData();
 
     public PlayerConfiguration(UUID playerID) {

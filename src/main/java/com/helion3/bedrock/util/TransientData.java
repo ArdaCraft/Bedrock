@@ -19,6 +19,7 @@ public class TransientData {
 				T t = (T) value;
 				return Optional.of(t);
 			} catch (ClassCastException e) {
+				e.printStackTrace();
 				return Optional.empty();
 			}
 		}
@@ -38,4 +39,9 @@ public class TransientData {
 	public boolean remove(String node) {
 		return data.remove(node) != null;
 	}
+
+    @Override
+    public String toString() {
+        return data.toString();
+    }
 }

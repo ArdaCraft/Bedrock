@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PlayerConfigManager {
-    private final Map<Player, PlayerConfiguration> playerConfigs = new HashMap<>();
+    private final Map<UUID, PlayerConfiguration> playerConfigs = new HashMap<>();
 
     /**
      * Load and cache a player's configuration file.
@@ -40,7 +40,7 @@ public class PlayerConfigManager {
      */
     public void loadPlayer(Player player) {
         PlayerConfiguration config = getPlayerConfig(player.getUniqueId());
-        playerConfigs.put(player, config);
+        playerConfigs.put(player.getUniqueId(), config);
     }
 
     /**
@@ -60,7 +60,11 @@ public class PlayerConfigManager {
      * @return PlayerConfiguration
      */
     public PlayerConfiguration getPlayerConfig(UUID uuid) {
-        return new PlayerConfiguration(uuid);
+        PlayerConfiguration configuration = playerConfigs.get(uuid);
+        if (configuration == null) {
+            playerConfigs.put(uuid, configuration = new PlayerConfiguration(uuid));
+        }
+        return configuration;
     }
 
     /**
@@ -69,6 +73,6 @@ public class PlayerConfigManager {
      * @param player
      */
     public void unload(Player player) {
-        playerConfigs.remove(player);
+        playerConfigs.remove(player.getUniqueId()).save();
     }
 }

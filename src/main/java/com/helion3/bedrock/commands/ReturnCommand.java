@@ -1,26 +1,19 @@
 package com.helion3.bedrock.commands;
 
-import java.util.Optional;
-
+import com.helion3.bedrock.Bedrock;
+import com.helion3.bedrock.util.BoundedDeque;
+import com.helion3.bedrock.util.Format;
+import com.helion3.bedrock.util.TransientData;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.spec.CommandSpec;
-import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import com.helion3.bedrock.Bedrock;
-import com.helion3.bedrock.PlayerConfiguration;
-import com.helion3.bedrock.util.BoundedDeque;
-import com.helion3.bedrock.util.Format;
+import java.util.Optional;
 
 public class ReturnCommand {
-	public static final String NAMED = "RETURN_COMMAND";
-	private static final Object CAUSE = new ReturnCommand();
 
 	private ReturnCommand() {}
 
@@ -40,19 +33,16 @@ public class ReturnCommand {
                 return CommandResult.empty();
             }
 
-            PlayerConfiguration config = Bedrock.getPlayerConfigManager().getPlayerConfig(player);
-            Optional<BoundedDeque<Location<World>>> history = config.getTransientData().get("tphistory");
-            if (!history.isPresent() || history.get().isEmpty()) {
-            	player.sendMessage(Format.error("You have no teleport history available!"));
+            TransientData data = Bedrock.getPlayerConfigManager().getPlayerConfig(player).getTransientData();
+            Optional<BoundedDeque<Location<World>>> history = data.get("teleport.history");
+            if (!(history.isPresent() && history.get().size() > 0)) {
+                player.sendMessage(Format.error("You do not have any teleport history available!"));
             	return CommandResult.success();
             }
 
-            Cause cause = Cause.builder().named(NamedCause.of(NAMED, CAUSE)).build();
-            Transform<World> from = new Transform<>(player.getLocation());
-            Transform<World> to = new Transform<>(history.get().poll());
-            SpongeEventFactory.createDisplaceEntityEventTeleport(cause, from, to, player);
-
+            data.get("teleport.return", () -> true);
             player.sendMessage(Format.success("Teleporting you to your previous location."));
+            player.setLocation(history.get().poll());
 
             return CommandResult.success();
         }).build();

@@ -23,22 +23,21 @@
  */
 package com.helion3.bedrock.managers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.spongepowered.api.service.pagination.PaginationList;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.action.TextActions;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
-
 import com.google.common.collect.ImmutableMap;
 import com.helion3.bedrock.NamedConfiguration;
 import com.helion3.bedrock.util.ConfigurationUtil;
 import com.helion3.bedrock.util.Format;
-
 import ninja.leaping.configurate.ConfigurationNode;
+import org.spongepowered.api.service.pagination.PaginationList;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
+import org.spongepowered.api.text.format.TextStyles;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class WarpManager {
     private final NamedConfiguration config;
@@ -118,11 +117,14 @@ public class WarpManager {
     			.map(Object::toString)
     			.filter(s -> s.toLowerCase().startsWith(match))
     			.sorted()
-    			.map(s -> Format.message(s).toBuilder()
-    					.onClick(TextActions.runCommand("/warp " + s))
-    					.onHover(TextActions.showText(Format.heading("Click to warp")))
-    					.build())
+    			.map(s -> Text.builder("- ")
+                        .append(Text.builder(s)
+                                .style(TextStyles.UNDERLINE)
+                                .onClick(TextActions.runCommand("/warp " + s))
+                                .onHover(TextActions.showText(Format.success("Click to warp")))
+                                .build())
+                        .build())
     			.forEach(warps::add);
-    	return PaginationList.builder().contents(warps).header(Format.heading("Suggested Warps")).build();
+    	return PaginationList.builder().contents(warps).title(Format.heading("Suggested Warps")).build();
     }
 }
