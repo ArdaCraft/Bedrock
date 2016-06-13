@@ -37,7 +37,7 @@ public class SetWarpCommand {
     public static CommandSpec getCommand() {
         return CommandSpec.builder()
         .arguments(
-            GenericArguments.string(Text.of("name"))
+            GenericArguments.remainingJoinedStrings(Text.of("name"))
         )
         .description(Text.of("Sets a warp."))
         .permission("bedrock.setwarp")

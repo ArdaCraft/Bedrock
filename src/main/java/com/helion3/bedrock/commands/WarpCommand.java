@@ -41,7 +41,7 @@ public class WarpCommand {
     public static CommandSpec getCommand() {
         return CommandSpec.builder()
         .arguments(
-            GenericArguments.string(Text.of("name"))
+            GenericArguments.remainingJoinedStrings(Text.of("name"))
         )
         .description(Text.of("Teleport to a named location."))
         .permission("bedrock.warp")
@@ -61,8 +61,9 @@ public class WarpCommand {
             Optional<Location<World>> location = Bedrock.getWarpManager().getWarp(name);
 
             if (!location.isPresent()) {
-                source.sendMessage(Format.error("No warp exists with that name."));
-                return CommandResult.empty();
+                source.sendMessage(Format.subdued("No warp exists with that name."));
+                Bedrock.getWarpManager().getMatchingWarps(name).sendTo(source);
+                return CommandResult.success();
             }
 
             player.setLocation(location.get());

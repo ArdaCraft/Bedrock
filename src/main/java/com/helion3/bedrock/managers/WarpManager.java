@@ -23,14 +23,22 @@
  */
 package com.helion3.bedrock.managers;
 
-import com.google.common.collect.ImmutableMap;
-import com.helion3.bedrock.NamedConfiguration;
-import com.helion3.bedrock.util.ConfigurationUtil;
-import ninja.leaping.configurate.ConfigurationNode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.spongepowered.api.service.pagination.PaginationList;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import java.util.Optional;
+import com.google.common.collect.ImmutableMap;
+import com.helion3.bedrock.NamedConfiguration;
+import com.helion3.bedrock.util.ConfigurationUtil;
+import com.helion3.bedrock.util.Format;
+
+import ninja.leaping.configurate.ConfigurationNode;
 
 public class WarpManager {
     private final NamedConfiguration config;
@@ -95,5 +103,26 @@ public class WarpManager {
         }
 
         return builder.build();
+    }
+
+    /**
+     * Get a paginated list of matching warps.
+     *
+     * @param name String warp name
+     * @return PaginationList of click-able warps
+     */
+    public PaginationList getMatchingWarps(String name) {
+    	String match = name.toLowerCase();
+    	List<Text> warps = new ArrayList<>();
+    	config.getRootNode().getChildrenMap().keySet().stream()
+    			.map(Object::toString)
+    			.filter(s -> s.toLowerCase().startsWith(match))
+    			.sorted()
+    			.map(s -> Format.message(s).toBuilder()
+    					.onClick(TextActions.runCommand("/warp " + s))
+    					.onHover(TextActions.showText(Format.heading("Click to warp")))
+    					.build())
+    			.forEach(warps::add);
+    	return PaginationList.builder().contents(warps).header(Format.heading("Matching Warps")).build();
     }
 }
