@@ -106,6 +106,7 @@ public class Bedrock {
         game.getCommandManager().register(this, PerformanceCommand.getCommand(), "performance", "perf", "gc");
         game.getCommandManager().register(this, PingCommand.getCommand(), "ping");
         game.getCommandManager().register(this, ReplyCommand.getCommand(), "r", "reply");
+        game.getCommandManager().register(this, ReturnCommand.getCommand(), "return");
         game.getCommandManager().register(this, SetHomeCommand.getCommand(), "sethome");
         game.getCommandManager().register(this, SetSpawnCommand.getCommand(), "setspawn");
         game.getCommandManager().register(this, SetWarpCommand.getCommand(), "setwarp");

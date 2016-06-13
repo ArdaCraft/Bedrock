@@ -66,6 +66,11 @@ public class Configuration {
                 afkKick.setValue(120);
             }
 
+            ConfigurationNode returnTp = rootNode.getNode("return", "historySize");
+            if (returnTp.isVirtual()) {
+            	returnTp.setValue(20);
+            }
+
             // Save
             try {
                 configManager.save(rootNode);

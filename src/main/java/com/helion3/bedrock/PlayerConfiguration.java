@@ -33,9 +33,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+import com.helion3.bedrock.util.TransientData;
+
 public class PlayerConfiguration {
     private ConfigurationLoader<CommentedConfigurationNode> configLoader;
     private ConfigurationNode rootNode = null;;
+    private final TransientData transientData = new TransientData();
 
     public PlayerConfiguration(UUID playerID) {
         try {
@@ -91,5 +94,9 @@ public class PlayerConfiguration {
      */
     public ConfigurationNode getNode(Object... path) {
         return rootNode.getNode(path);
+    }
+
+    public TransientData getTransientData() {
+    	return transientData;
     }
 }
