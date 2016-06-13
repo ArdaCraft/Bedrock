@@ -68,7 +68,6 @@ public class BackCommand {
             player.sendMessage(Format.success("Teleporting you to your last death location."));
 
             return CommandResult.success();
-        })
-        .build();
+        }).build();
     }
 }
