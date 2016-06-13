@@ -123,6 +123,6 @@ public class WarpManager {
     					.onHover(TextActions.showText(Format.heading("Click to warp")))
     					.build())
     			.forEach(warps::add);
-    	return PaginationList.builder().contents(warps).header(Format.heading("Matching Warps")).build();
+    	return PaginationList.builder().contents(warps).header(Format.heading("Suggested Warps")).build();
     }
 }
