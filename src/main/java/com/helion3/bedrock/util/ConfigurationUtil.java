@@ -36,27 +36,28 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class ConfigurationUtil {
-    private ConfigurationUtil() {}
+    private ConfigurationUtil() {
+    }
 
     /**
-     * Get a child ConfigurationNode from it's parent by name.
-     * If an exact match the given name is not found, search by ignoring case.
+     * Get a child ConfigurationNode from it's parent by name. If an exact match
+     * the given name is not found, search by ignoring case.
      *
      * @param config The parent node
      * @param name The path of the child node
      * @return the child ConfigurationNode. May be virtual if no matches could be found
      */
     public static ConfigurationNode findNamedNode(ConfigurationNode config, String name) {
-    	ConfigurationNode node = config.getNode(name);
-    	if (node.isVirtual()) {
-    		for (Map.Entry<Object, ? extends ConfigurationNode> entry : config.getChildrenMap().entrySet()) {
-    			String key = entry.getKey().toString();
-    			if (key.equalsIgnoreCase(name)) {
-    				return entry.getValue();
-    			}
-    		}
-    	}
-    	return node;
+        ConfigurationNode node = config.getNode(name);
+        if (node.isVirtual()) {
+            for (Map.Entry<Object, ? extends ConfigurationNode> entry : config.getChildrenMap().entrySet()) {
+                String key = entry.getKey().toString();
+                if (key.equalsIgnoreCase(name)) {
+                    return entry.getValue();
+                }
+            }
+        }
+        return node;
     }
 
     /**
@@ -83,26 +84,32 @@ public class ConfigurationUtil {
         return Optional.empty();
     }
 
+    /**
+     * Get a Transform object for a named Transform.
+     *
+     * @param name String Transform name
+     * @return Optional Transform
+     */
     public static Optional<Transform<World>> getNamedTransform(ConfigurationNode config, String name) {
-    	ConfigurationNode node = findNamedNode(config, name);
+        ConfigurationNode node = findNamedNode(config, name);
         if (!node.isVirtual()) {
             UUID worldUuid = UUID.fromString(node.getNode("worldUuid").getString());
             Optional<World> world = Bedrock.getGame().getServer().getWorld(worldUuid);
 
             if (world.isPresent()) {
-            	double x = node.getNode("x").getDouble();
+                double x = node.getNode("x").getDouble();
                 double y = node.getNode("y").getDouble();
                 double z = node.getNode("z").getDouble();
 
                 Vector3d position = new Vector3d(x, y, z);
 
-            	ConfigurationNode pitch = node.getNode("pitch");
+                ConfigurationNode pitch = node.getNode("pitch");
                 ConfigurationNode yaw = node.getNode("yaw");
                 if (!pitch.isVirtual() && !yaw.isVirtual()) {
-                	// x = pitch, y = yaw, z = roll
-                	Vector3d rotatation = new Vector3d(pitch.getDouble(), yaw.getDouble(), 0D);
-                	Transform<World> transform = new Transform<>(world.get(), position, rotatation);
-                	return Optional.of(transform);
+                    // x = pitch, y = yaw, z = roll
+                    Vector3d rotatation = new Vector3d(pitch.getDouble(), yaw.getDouble(), 0D);
+                    Transform<World> transform = new Transform<>(world.get(), position, rotatation);
+                    return Optional.of(transform);
                 }
 
                 Transform<World> transform = new Transform<>(world.get(), position);

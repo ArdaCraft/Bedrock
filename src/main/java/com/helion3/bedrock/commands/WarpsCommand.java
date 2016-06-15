@@ -59,7 +59,7 @@ public class WarpsCommand {
         	// if the user clicks a warp in the future when they may be in jail, or have had permissions removed.
             ArrayList<Text> contents = new ArrayList<>();
             for (String warpName : warps) {
-            	Text.Builder builder = Text.builder().append(Format.message(warpName));
+                Text.Builder builder = Text.builder().append(Format.message(warpName));
                 builder.onClick(TextActions.runCommand("/warp " + warpName));
                 contents.add(builder.build());
             }
