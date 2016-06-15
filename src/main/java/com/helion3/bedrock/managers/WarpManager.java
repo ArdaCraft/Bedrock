@@ -140,20 +140,20 @@ public class WarpManager {
      * @return List of warp names
      */
     public List<String> listWarps() {
-        return config.getRootNode().getChildrenMap().keySet().stream().map(Object::toString).sorted()
-                .collect(Collectors.toList());
+        return config.getRootNode().getChildrenMap().keySet().stream().map(Object::toString).sorted().collect(Collectors.toList());
     }
 
     /**
      * Get a paginated list of matching warps.
      *
-     * @param name
-     *            String warp name
+     * @param name String warp name
      * @return PaginationList of click-able warps
      */
     public PaginationList getMatchingWarps(String name) {
         String match = name.toLowerCase();
-        List<Text> warps = listWarps().stream().filter(s -> s.toLowerCase().startsWith(match)).sorted()
+        List<Text> warps = listWarps().stream()
+                .filter(s -> s.toLowerCase().startsWith(match))
+                .sorted()
                 .map(s -> Text.builder(s).style(TextStyles.UNDERLINE).onClick(TextActions.runCommand("/warp " + s))
                         .onHover(TextActions.showText(Format.success("Click to warp"))).build())
                 .collect(Collectors.toList());

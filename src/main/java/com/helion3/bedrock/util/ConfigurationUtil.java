@@ -36,8 +36,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class ConfigurationUtil {
-    private ConfigurationUtil() {
-    }
+    private ConfigurationUtil() {}
 
     /**
      * Get a child ConfigurationNode from it's parent by name. If an exact match
