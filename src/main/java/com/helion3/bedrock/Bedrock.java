@@ -48,8 +48,10 @@ import org.spongepowered.api.plugin.Plugin;
 
 import java.io.File;
 
-@Plugin(id = "bedrock", name = "bedrock", version = "1.0AC")
+@Plugin(id = "bedrock", name = "bedrock", version = Bedrock.VERSION)
 public class Bedrock {
+    public static final String VERSION = "${version}-build${build.number}";
+
     private static AFKManager afkManager;
     private static Configuration config;
     private static Game game;
