@@ -23,17 +23,18 @@
  */
 package com.helion3.bedrock.commands;
 
-import com.helion3.bedrock.Bedrock;
-import com.helion3.bedrock.util.Format;
+import java.util.Optional;
+
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import java.util.Optional;
+import com.helion3.bedrock.Bedrock;
+import com.helion3.bedrock.util.Format;
 
 public class WarpCommand {
     private WarpCommand() {}
@@ -58,15 +59,15 @@ public class WarpCommand {
             }
 
             String name = args.<String>getOne("name").get();
-            Optional<Location<World>> location = Bedrock.getWarpManager().getWarp(name);
+            Optional<Transform<World>> transform = Bedrock.getWarpManager().getWarp2(name);
 
-            if (!location.isPresent()) {
+            if (!transform.isPresent()) {
                 source.sendMessage(Format.subdued("No warp exists with that name."));
                 Bedrock.getWarpManager().getMatchingWarps(name).sendTo(source);
                 return CommandResult.success();
             }
 
-            player.setLocation(location.get());
+            player.setTransform(transform.get());
             source.sendMessage(Format.heading(String.format("Teleporting to %s.", name)));
 
             return CommandResult.success();

@@ -48,7 +48,7 @@ public class SetWarpCommand {
             }
 
             String name = args.<String>getOne("name").get();
-            Bedrock.getWarpManager().create(name, ((Player) source).getLocation());
+            Bedrock.getWarpManager().create(name, ((Player) source).getTransform());
             source.sendMessage(Format.heading(String.format("Created warp %s.", name)));
 
             return CommandResult.success();

@@ -77,7 +77,6 @@ public class MessageManager {
         ArrayList<MessageReceiver> toRemove = new ArrayList<>();
         for (MessageReceiver receiver : channel.getMembers()) {
             if (receiver instanceof Player) {
-                Player player = (Player) receiver;
 
                 if (receiver.equals(sender) || receiver.equals(recipient) ||
                         !Bedrock.getMessageManager().playerIsSpying((Player) receiver)) {

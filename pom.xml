@@ -4,7 +4,7 @@
 
     <groupId>com.helion3</groupId>
     <artifactId>Bedrock</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0AC-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Bedrock</name>
 
@@ -40,7 +40,7 @@
             </snapshots>
         </repository>
     </repositories>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.spongepowered</groupId>

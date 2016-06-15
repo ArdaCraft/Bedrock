@@ -23,11 +23,11 @@
  */
 package com.helion3.bedrock.managers;
 
-import com.google.common.collect.ImmutableMap;
-import com.helion3.bedrock.NamedConfiguration;
-import com.helion3.bedrock.util.ConfigurationUtil;
-import com.helion3.bedrock.util.Format;
-import ninja.leaping.configurate.ConfigurationNode;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -35,9 +35,12 @@ import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.google.common.collect.ImmutableMap;
+import com.helion3.bedrock.NamedConfiguration;
+import com.helion3.bedrock.util.ConfigurationUtil;
+import com.helion3.bedrock.util.Format;
+
+import ninja.leaping.configurate.ConfigurationNode;
 
 public class WarpManager {
     private final NamedConfiguration config;
@@ -62,13 +65,30 @@ public class WarpManager {
     }
 
     /**
+     * Create a new warp and save to disk.
+     *
+     * @param name String name
+     * @param transform Transform
+     */
+    public void create(String name, Transform<World> transform) {
+        ConfigurationNode node = config.getRootNode().getNode(name);
+        node.getNode("x").setValue(transform.getLocation().getBlockX());
+        node.getNode("y").setValue(transform.getLocation().getBlockY());
+        node.getNode("z").setValue(transform.getLocation().getBlockZ());
+        node.getNode("pitch").setValue(transform.getPitch());
+        node.getNode("yaw").setValue(transform.getYaw());
+        node.getNode("worldUuid").setValue(transform.getExtent().getUniqueId().toString());
+        config.save();
+    }
+
+    /**
      * Delete a warp.
      *
      * @param name String warp name.
      * @return boolean If it existed
      */
     public boolean delete(String name) {
-        ConfigurationNode node = config.getRootNode().getNode(name);
+        ConfigurationNode node = ConfigurationUtil.findNamedNode(config.getRootNode(), name);
         if (node.isVirtual()) {
             return false;
         }
@@ -90,6 +110,16 @@ public class WarpManager {
     }
 
     /**
+     * Get transform for a named warp.
+     *
+     * @param name String warp name
+     * @return Optional Transform
+     */
+    public Optional<Transform<World>> getWarp2(String name) {
+    	return ConfigurationUtil.getNamedTransform(config.getRootNode(), name);
+    }
+
+    /**
      * Get a list of all warps.
      *
      * @return ImmutableMap of warp names and locations
@@ -105,6 +135,15 @@ public class WarpManager {
     }
 
     /**
+     * Get a list of all warp names
+     *
+     * @return List of warp names
+     */
+    public List<String> listWarps() {
+    	return config.getRootNode().getChildrenMap().keySet().stream().map(Object::toString).sorted().collect(Collectors.toList());
+    }
+
+    /**
      * Get a paginated list of matching warps.
      *
      * @param name String warp name
@@ -112,19 +151,15 @@ public class WarpManager {
      */
     public PaginationList getMatchingWarps(String name) {
     	String match = name.toLowerCase();
-    	List<Text> warps = new ArrayList<>();
-    	config.getRootNode().getChildrenMap().keySet().stream()
-    			.map(Object::toString)
+    	List<Text> warps = listWarps().stream()
     			.filter(s -> s.toLowerCase().startsWith(match))
     			.sorted()
-    			.map(s -> Text.builder("- ")
-                        .append(Text.builder(s)
+    			.map(s -> Text.builder(s)
                                 .style(TextStyles.UNDERLINE)
                                 .onClick(TextActions.runCommand("/warp " + s))
                                 .onHover(TextActions.showText(Format.success("Click to warp")))
                                 .build())
-                        .build())
-    			.forEach(warps::add);
+    			.collect(Collectors.toList());
     	return PaginationList.builder().contents(warps).title(Format.heading("Suggested Warps")).build();
     }
 }

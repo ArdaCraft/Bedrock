@@ -36,7 +36,7 @@ public class ReturnCommand {
             TransientData data = Bedrock.getPlayerConfigManager().getPlayerConfig(player).getTransientData();
             Optional<BoundedDeque<Location<World>>> history = data.get("teleport.history");
             if (!(history.isPresent() && history.get().size() > 0)) {
-                player.sendMessage(Format.error("You do not have any teleport history available!"));
+                player.sendMessage(Format.error("Your teleport history is empty."));
             	return CommandResult.success();
             }
 
