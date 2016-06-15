@@ -17,12 +17,12 @@
 
 	<build>
 		<finalName>${artifactId}-${version}-build${build.number}</finalName>
-		<sourceDirectory>target/genereated-sources/java</sourceDirectory>
+		<sourceDirectory>target/generated-sources/java</sourceDirectory>
 		<resources>
 			<resource>
 				<filtering>true</filtering>
 				<directory>src/main/java</directory>
-				<targetPath>../genereated-sources/java</targetPath>
+				<targetPath>../generated-sources/java</targetPath>
 				<includes>
 					<include>**/*.java</include>
 				</includes>
