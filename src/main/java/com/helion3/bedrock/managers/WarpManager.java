@@ -60,7 +60,7 @@ public class WarpManager {
         node.getNode("x").setValue(location.getBlockX());
         node.getNode("y").setValue(location.getBlockY());
         node.getNode("z").setValue(location.getBlockZ());
-        node.getNode("worldUuid").setValue(location.getExtent().getUniqueId().toString());
+        node.getNode("world").setValue(location.getExtent().getName());
         config.save();
     }
 
@@ -77,7 +77,7 @@ public class WarpManager {
         node.getNode("z").setValue(transform.getLocation().getBlockZ());
         node.getNode("pitch").setValue(transform.getPitch());
         node.getNode("yaw").setValue(transform.getYaw());
-        node.getNode("worldUuid").setValue(transform.getExtent().getUniqueId().toString());
+        node.getNode("world").setValue(transform.getExtent().getName());
         config.save();
     }
 
