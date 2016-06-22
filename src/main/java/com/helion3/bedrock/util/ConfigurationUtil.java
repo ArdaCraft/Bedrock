@@ -26,14 +26,12 @@ package com.helion3.bedrock.util;
 import com.flowpowered.math.vector.Vector3d;
 import com.helion3.bedrock.Bedrock;
 import ninja.leaping.configurate.ConfigurationNode;
-
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 public class ConfigurationUtil {
     private ConfigurationUtil() {}
@@ -72,9 +70,9 @@ public class ConfigurationUtil {
             double x = node.getNode("x").getDouble();
             double y = node.getNode("y").getDouble();
             double z = node.getNode("z").getDouble();
-            UUID worldUuid = UUID.fromString(node.getNode("worldUuid").getString());
+            String worldName = node.getNode("world").getString();
 
-            Optional<World> world = Bedrock.getGame().getServer().getWorld(worldUuid);
+            Optional<World> world = Bedrock.getGame().getServer().getWorld(worldName);
             if (world.isPresent()) {
                 return Optional.of(world.get().getLocation(x, y, z));
             }
@@ -92,8 +90,8 @@ public class ConfigurationUtil {
     public static Optional<Transform<World>> getNamedTransform(ConfigurationNode config, String name) {
         ConfigurationNode node = findNamedNode(config, name);
         if (!node.isVirtual()) {
-            UUID worldUuid = UUID.fromString(node.getNode("worldUuid").getString());
-            Optional<World> world = Bedrock.getGame().getServer().getWorld(worldUuid);
+            String worldName = node.getNode("world").getString();
+            Optional<World> world = Bedrock.getGame().getServer().getWorld(worldName);
 
             if (world.isPresent()) {
                 double x = node.getNode("x").getDouble();
