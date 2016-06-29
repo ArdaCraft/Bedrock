@@ -31,6 +31,8 @@ import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.serializer.TextSerializer;
+import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -49,8 +51,9 @@ public class JoinListener {
 
             player.setLocation(spawn);
 
-            MessageChannel.TO_ALL.send(Text.of(TextColors.GOLD, "Welcome ", TextColors.LIGHT_PURPLE,
-                player.getName(),TextColors.GOLD, " to DHMC!"));
+            String raw = String.format(Bedrock.getConfig().getNode("messages", "welcome").getString(), player.getName());
+            Text message = TextSerializers.formattingCode('&').deserialize(raw);
+            MessageChannel.TO_ALL.send(message);
         }
     }
 }
