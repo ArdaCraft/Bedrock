@@ -25,6 +25,8 @@ package com.helion3.bedrock.managers;
 
 import com.helion3.bedrock.Bedrock;
 import com.helion3.bedrock.PlayerConfiguration;
+import com.helion3.bedrock.util.URLUtils;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
@@ -33,27 +35,23 @@ import org.spongepowered.api.text.channel.MutableMessageChannel;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class MessageManager {
-    private final Map<Player,Player> lastSenders = new HashMap<>();
+    private final Map<CommandSource, CommandSource> lastSenders = new WeakHashMap<>();
 
     /**
-     * Clear any entries with a given player as the sender or recipient.
+     * Clear any entries with a given CommandSource as the sender or recipient.
      *
-     * @param player Player
+     * @param source CommandSource
      */
-    public void clear(Player player) {
-        lastSenders.remove(player);
+    public void clear(CommandSource source) {
+        lastSenders.remove(source);
 
-        Iterator<Map.Entry<Player, Player>> iterator = lastSenders.entrySet().iterator();
+        Iterator<Map.Entry<CommandSource, CommandSource>> iterator = lastSenders.entrySet().iterator();
         while (iterator.hasNext()) {
-            Map.Entry<Player, Player> entry = iterator.next();
-            if (entry.getValue().equals(player)) {
+            Map.Entry<CommandSource, CommandSource> entry = iterator.next();
+            if (entry.getValue().equals(source)) {
                 iterator.remove();
             }
         }
@@ -62,12 +60,13 @@ public class MessageManager {
     /**
      * Send a message.
      *
-     * @param sender Player sender
-     * @param recipient Player recipient
-     * @param message String message
+     * @param sender CommandSource sender
+     * @param recipient CommandSource recipient
+     * @param rawMessage String message
      */
-    public void message(Player sender, Player recipient, String message) {
+    public void message(CommandSource sender, CommandSource recipient, String rawMessage) {
         // Send to recipient
+        Text message = URLUtils.replaceURLs(rawMessage);
         recipient.sendMessage(Text.of(TextStyles.ITALIC, TextColors.GRAY, sender.getName(), ": ", message));
 
         // Send to watchers
@@ -87,7 +86,6 @@ public class MessageManager {
 
         // Remove invalid recipients
         toRemove.forEach(channel::removeMember);
-
         Text notification = Text.of(TextStyles.ITALIC, TextColors.GRAY, sender.getName(), " -> ", recipient.getName(), ": ", message);
 
         // Notify sender
@@ -109,20 +107,20 @@ public class MessageManager {
     /**
      * Get the last message sender, if any.
      *
-     * @param recipient Player recipient
-     * @return Optional Player
+     * @param recipient CommandSource recipient
+     * @return Optional CommandSource
      */
-    public Optional<Player> getLastSender(Player recipient) {
+    public Optional<CommandSource> getLastSender(CommandSource recipient) {
         return Optional.ofNullable(lastSenders.get(recipient));
     }
 
     /**
      * Sets the last known sender for messages.
      *
-     * @param sender Player sender
-     * @param recipient Player recipient
+     * @param sender CommandSource sender
+     * @param recipient CommandSource recipient
      */
-    public void setLastSender(Player sender, Player recipient) {
+    public void setLastSender(CommandSource sender, CommandSource recipient) {
         lastSenders.put(recipient, sender);
     }
 
