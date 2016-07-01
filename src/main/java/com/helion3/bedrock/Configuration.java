@@ -53,7 +53,7 @@ public class Configuration {
 
             ConfigurationNode welcomeNewUser = rootNode.getNode("messages", "welcome");
             if (welcomeNewUser.isVirtual()) {
-                welcomeNewUser.setValue("&aWelcome &3%1$s &ato the server!");
+                welcomeNewUser.setValue("&aWelcome &3%s &ato the server!");
             }
 
             ConfigurationNode afkEnabled = rootNode.getNode("afk", "timers", "enabled");
