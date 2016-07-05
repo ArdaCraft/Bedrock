@@ -23,10 +23,12 @@
  */
 package com.helion3.bedrock.managers;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import com.google.common.collect.ImmutableMap;
+import com.helion3.bedrock.Bedrock;
+import com.helion3.bedrock.NamedConfiguration;
+import com.helion3.bedrock.util.ConfigurationUtil;
+import com.helion3.bedrock.util.Format;
+import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
@@ -35,12 +37,11 @@ import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import com.google.common.collect.ImmutableMap;
-import com.helion3.bedrock.NamedConfiguration;
-import com.helion3.bedrock.util.ConfigurationUtil;
-import com.helion3.bedrock.util.Format;
-
-import ninja.leaping.configurate.ConfigurationNode;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class WarpManager {
     private final NamedConfiguration config;
@@ -150,13 +151,45 @@ public class WarpManager {
      * @return PaginationList of click-able warps
      */
     public PaginationList getMatchingWarps(String name) {
-        String match = name.toLowerCase();
-        List<Text> warps = listWarps().stream()
-                .filter(s -> s.toLowerCase().startsWith(match))
-                .sorted()
-                .map(s -> Text.builder(s).style(TextStyles.UNDERLINE).onClick(TextActions.runCommand("/warp " + s))
-                        .onHover(TextActions.showText(Format.success("Click to warp"))).build())
-                .collect(Collectors.toList());
-        return PaginationList.builder().contents(warps).title(Format.heading("Suggested Warps")).build();
+        return getMatchingWarps(name, Bedrock.getConfig().getNode("warps", "search_accuracy").getFloat());
+    }
+
+    private PaginationList getMatchingWarps(String name, float accuracy) {
+        Map<Text, Integer> matches = new HashMap<>();
+        listWarps().forEach(s -> {
+            int match = match(name, s);
+            if (match >= s.length() * accuracy) {
+                matches.put(Text.builder(s).style(TextStyles.UNDERLINE).onClick(TextActions.runCommand("/warp " + s))
+                        .onHover(TextActions.showText(Format.success("Click to warp"))).build(), match);
+            }
+        });
+        return PaginationList.builder()
+                .contents(matches.entrySet().stream().sorted((e1, e2) -> e2.getValue() - e1.getValue()).map(Map.Entry::getKey)
+                        .collect(Collectors.toList()))
+                .title(Format.heading("Suggested Warps")).build();
+    }
+
+    private static int match(String str1, String str2) {
+        str1 = str1.replace(" ", "");
+        str2 = str2.replace(" ", "");
+        int[][] num = new int[str1.length()][str2.length()];
+        int maxLen = 0;
+        for (int i = 0; i < str1.length(); i++) {
+            for (int j = 0; j < str2.length(); j++) {
+                if (Character.toLowerCase(str1.charAt(i)) != Character.toLowerCase(str2.charAt(j))) {
+                    num[i][j] = 0;
+                } else {
+                    if (i == 0 || j == 0) {
+                        num[i][j] = 1;
+                    } else {
+                        num[i][j] = 1 + num[i - 1][j - 1];
+                    }
+                    if (num[i][j] > maxLen) {
+                        maxLen = num[i][j];
+                    }
+                }
+            }
+        }
+        return maxLen;
     }
 }

@@ -76,7 +76,7 @@ public class SetHomeCommand {
             node.getNode("x").setValue(player.getLocation().getX());
             node.getNode("y").setValue(player.getLocation().getY());
             node.getNode("z").setValue(player.getLocation().getZ());
-            node.getNode("worldUuid").setValue(player.getWorld().getUniqueId().toString());
+            node.getNode("world").setValue(player.getWorld().getName());
             config.save();
 
             source.sendMessage(Format.heading(String.format("Home %s saved.", name)));

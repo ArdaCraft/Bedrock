@@ -56,6 +56,11 @@ public class Configuration {
                 welcomeNewUser.setValue("&aWelcome &3%s &ato the server!");
             }
 
+            ConfigurationNode warpAccuracy = rootNode.getNode("warps", "search_accuracy");
+            if (warpAccuracy.isVirtual()) {
+                warpAccuracy.setValue(0.5F);
+            }
+
             ConfigurationNode afkEnabled = rootNode.getNode("afk", "timers", "enabled");
             if (afkEnabled.isVirtual()) {
                 afkEnabled.setValue(true);
