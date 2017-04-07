@@ -46,10 +46,10 @@ public class VanishCommand {
                 Player player = (Player) source;
 
                 // Flip boolean
-                boolean wasVisible = player.get(Keys.INVISIBLE).orElse(false);
-                player.offer(Keys.INVISIBLE, !wasVisible);
-                player.offer(Keys.INVISIBILITY_IGNORES_COLLISION, true);
-                player.offer(Keys.INVISIBILITY_PREVENTS_TARGETING, true);
+                boolean wasVisible = player.get(Keys.VANISH).orElse(false);
+                player.offer(Keys.VANISH, !wasVisible);
+                player.offer(Keys.VANISH_IGNORES_COLLISION, true);
+                player.offer(Keys.VANISH_PREVENTS_TARGETING, true);
 
                 source.sendMessage(Format.success("You're now " + (wasVisible ? "" : "in") + "visible"));
 

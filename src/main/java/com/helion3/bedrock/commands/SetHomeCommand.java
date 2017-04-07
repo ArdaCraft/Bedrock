@@ -32,7 +32,6 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.permission.Subject;
-import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.text.Text;
 
 import java.util.Optional;
@@ -59,11 +58,9 @@ public class SetHomeCommand {
 
             int homesLimit = -1;
             Subject subject = player.getContainingCollection().get(player.getIdentifier());
-            if (subject instanceof OptionSubject) {
-                Optional<String> optionHomeLimit = ((OptionSubject) subject).getOption("homes");
-                if (optionHomeLimit.isPresent()) {
-                    homesLimit = Integer.parseInt(optionHomeLimit.get());
-                }
+            Optional<String> optionHomeLimit = subject.getOption("homes");
+            if (optionHomeLimit.isPresent()) {
+                homesLimit = Integer.parseInt(optionHomeLimit.get());
             }
 
             if (homesLimit > 0 && config.getNode("homes").getChildrenMap().size() > homesLimit) {

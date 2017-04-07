@@ -55,11 +55,6 @@ public class ImmutableInvincibilityData extends AbstractImmutableData<ImmutableI
     }
 
     @Override
-    public int compareTo(ImmutableInvincibilityData o) {
-        return 0;
-    }
-
-    @Override
     public int getContentVersion() {
         return 1;
     }

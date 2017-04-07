@@ -29,14 +29,14 @@ import com.helion3.bedrock.util.TransientData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
-import org.spongepowered.api.event.entity.DisplaceEntityEvent;
+import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 public class MoveListener {
     @Listener
-    public void onPlayerMove(DisplaceEntityEvent.Move event) {
+    public void onPlayerMove(MoveEntityEvent event) {
         if (event.getTargetEntity() instanceof Player) {
             Bedrock.getAFKManager().lastActivity((Player) event.getTargetEntity());
 
@@ -47,7 +47,7 @@ public class MoveListener {
     }
 
     @Listener (order = Order.POST)
-    public void onPlayerTeleport(DisplaceEntityEvent.Teleport event, @First Player player) {
+    public void onPlayerTeleport(MoveEntityEvent.Teleport event, @First Player player) {
     	// Ignore event if the teleport has been caused by the /return command itself
     	TransientData data = Bedrock.getPlayerConfigManager().getPlayerConfig(player).getTransientData();
         if (data.remove("teleport.return")) {
