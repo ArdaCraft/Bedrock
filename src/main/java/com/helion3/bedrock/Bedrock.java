@@ -45,7 +45,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 
 import java.io.File;
 
-@Plugin(id = "bedrock", name = "bedrock", version = "1.0", description = "Essential commands for Sponge servers")
+@Plugin(id = "bedrock", name = "bedrock", version = "1.1.1", description = "Essential commands for Sponge servers")
 public class Bedrock {
     private static AFKManager afkManager;
     private static Configuration config;
@@ -101,6 +101,7 @@ public class Bedrock {
         game.getCommandManager().register(this, HomeCommand.getCommand(), "home");
         game.getCommandManager().register(this, HomesCommand.getCommand(), "homes");
         game.getCommandManager().register(this, InvCommand.getCommand(), "inv", "openinv");
+        game.getCommandManager().register(this, ItemCommand.getCommand(), "item", "i");
         game.getCommandManager().register(this, KickCommand.getCommand(), "kick");
         game.getCommandManager().register(this, KickAllCommand.getCommand(), "kickall");
         game.getCommandManager().register(this, ListCommand.getCommand(), "list");
