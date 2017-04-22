@@ -30,6 +30,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
+import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -47,7 +48,7 @@ public class MoveListener {
     }
 
     @Listener (order = Order.POST)
-    public void onPlayerTeleport(MoveEntityEvent.Teleport event, @First Player player) {
+    public void onPlayerTeleport(MoveEntityEvent.Teleport event, @Getter("getTargetEntity") Player player) {
     	// Ignore event if the teleport has been caused by the /return command itself
     	TransientData data = Bedrock.getPlayerConfigManager().getPlayerConfig(player).getTransientData();
         if (data.remove("teleport.return")) {

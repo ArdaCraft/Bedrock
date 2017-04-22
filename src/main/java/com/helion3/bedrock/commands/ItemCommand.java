@@ -10,7 +10,6 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -39,9 +38,7 @@ public class ItemCommand {
                     Optional<BlockState> state = ItemCommand.getState(arguments);
                     if (state.isPresent()) {
                         if (source instanceof Player) {
-                            BlockState blockState = state.get();
-                            int quantity = blockState.getType().getItem().map(ItemType::getMaxStackQuantity).orElse(1);
-                            ItemStack stack = ItemStack.builder().fromBlockState(state.get()).quantity(quantity).build();
+                            ItemStack stack = ItemStack.builder().fromBlockState(state.get()).build();
                             ((Player) source).getInventory().offer(stack);
                         } else {
                             source.sendMessage(Text.of(state.get(), TextColors.YELLOW));
