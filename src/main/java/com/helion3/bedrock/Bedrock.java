@@ -142,6 +142,7 @@ public class Bedrock {
         game.getEventManager().registerListeners(this, new JoinListener());
         game.getEventManager().registerListeners(this, new MessageChannelListener());
         game.getEventManager().registerListeners(this, new MoveListener());
+        game.getEventManager().registerListeners(this, new SignListener());
 
         logger.info("Bedrock started.");
     }
