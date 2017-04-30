@@ -48,12 +48,18 @@ public class MoveListener {
     }
 
     @Listener (order = Order.POST)
-    public void onPlayerTeleport(MoveEntityEvent.Teleport event, @Getter("getTargetEntity") Player player) {
+    public void onPlayerTeleport(MoveEntityEvent.Teleport event) {
+        if (!(event.getTargetEntity() instanceof Player)) {
+            return;
+        }
+
     	// Ignore event if the teleport has been caused by the /return command itself
-    	TransientData data = Bedrock.getPlayerConfigManager().getPlayerConfig(player).getTransientData();
+    	Player player = (Player) event.getTargetEntity();
+        TransientData data = Bedrock.getPlayerConfigManager().getPlayerConfig(player).getTransientData();
         if (data.remove("teleport.return")) {
             return;
         }
+
     	int size = Bedrock.getConfig().getNode("return", "historySize").getInt();
     	BoundedDeque<Location<World>> history = data.get("teleport.history", () -> new BoundedDeque<>(size));
     	history.add(event.getFromTransform().getLocation());
