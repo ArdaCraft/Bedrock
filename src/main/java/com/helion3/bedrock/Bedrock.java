@@ -45,7 +45,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 
 import java.io.File;
 
-@Plugin(id = "bedrock", name = "bedrock", version = "1.1.2", description = "Essential commands for Sponge servers")
+@Plugin(id = "bedrock", name = "bedrock", version = "1.1.3", description = "Essential commands for Sponge servers")
 public class Bedrock {
     private static AFKManager afkManager;
     private static Configuration config;

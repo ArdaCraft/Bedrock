@@ -28,6 +28,7 @@ import com.helion3.bedrock.util.Format;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
@@ -55,12 +56,15 @@ public class TeleportCommand {
 
             if (args.<Player>getOne("target").isPresent()) {
                 target = args.<Player>getOne("target").get();
+
+                if (target.get(Keys.VANISH).orElse(false) && !source.hasPermission("bedrock.vanishtp")) {
+                    return CommandResult.empty();
+                }
             } else {
                 target = sourceOrTarget;
                 sourceOrTarget = (Player) source;
             }
 
-            Player player = (Player) source;
             if (Bedrock.getJailManager().isFrozen(sourceOrTarget)) {
                 source.sendMessage(Format.error("Player is frozen and may not travel."));
                 return CommandResult.empty();
