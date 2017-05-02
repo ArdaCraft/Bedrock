@@ -24,7 +24,6 @@
 package com.helion3.bedrock.managers;
 
 import com.google.common.collect.ImmutableMap;
-import com.helion3.bedrock.Bedrock;
 import com.helion3.bedrock.NamedConfiguration;
 import com.helion3.bedrock.util.ConfigurationUtil;
 import com.helion3.bedrock.util.Format;
@@ -33,15 +32,15 @@ import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
-import org.spongepowered.api.text.format.TextStyles;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class WarpManager {
     private final NamedConfiguration config;
@@ -141,55 +140,28 @@ public class WarpManager {
      * @return List of warp names
      */
     public List<String> listWarps() {
-        return config.getRootNode().getChildrenMap().keySet().stream().map(Object::toString).sorted().collect(Collectors.toList());
+        return config.getRootNode().getChildrenMap().keySet().stream()
+                .map(Object::toString)
+                .sorted()
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Get a paginated list of matching warps.
-     *
-     * @param name String warp name
-     * @return PaginationList of click-able warps
-     */
-    public PaginationList getMatchingWarps(String name) {
-        return getMatchingWarps(name, Bedrock.getConfig().getNode("warps", "search_accuracy").getFloat());
-    }
+    public PaginationList buildList(Text title, Stream<String> warpNames) {
+        List<Text> content = new LinkedList<>();
+        warpNames.forEach(name -> {
+            Text line = Text.builder()
+                    .append(Format.message(name))
+                    .onHover(TextActions.showText(Text.of("Click to warp to ", name, TextColors.YELLOW)))
+                    .onClick(TextActions.runCommand(String.format("/warp %s", name)))
+                    .build();
 
-    private PaginationList getMatchingWarps(String name, float accuracy) {
-        Map<Text, Integer> matches = new HashMap<>();
-        listWarps().forEach(s -> {
-            int match = match(name, s);
-            if (match >= s.length() * accuracy) {
-                matches.put(Text.builder(s).style(TextStyles.UNDERLINE).onClick(TextActions.runCommand("/warp " + s))
-                        .onHover(TextActions.showText(Format.success("Click to warp"))).build(), match);
-            }
+            content.add(line);
         });
-        return PaginationList.builder()
-                .contents(matches.entrySet().stream().sorted((e1, e2) -> e2.getValue() - e1.getValue()).map(Map.Entry::getKey)
-                        .collect(Collectors.toList()))
-                .title(Format.heading("Suggested Warps")).build();
-    }
 
-    private static int match(String str1, String str2) {
-        str1 = str1.replace(" ", "");
-        str2 = str2.replace(" ", "");
-        int[][] num = new int[str1.length()][str2.length()];
-        int maxLen = 0;
-        for (int i = 0; i < str1.length(); i++) {
-            for (int j = 0; j < str2.length(); j++) {
-                if (Character.toLowerCase(str1.charAt(i)) != Character.toLowerCase(str2.charAt(j))) {
-                    num[i][j] = 0;
-                } else {
-                    if (i == 0 || j == 0) {
-                        num[i][j] = 1;
-                    } else {
-                        num[i][j] = 1 + num[i - 1][j - 1];
-                    }
-                    if (num[i][j] > maxLen) {
-                        maxLen = num[i][j];
-                    }
-                }
-            }
-        }
-        return maxLen;
+        return PaginationList.builder()
+                .title(title)
+                .linesPerPage(11)
+                .contents(content)
+                .build();
     }
 }

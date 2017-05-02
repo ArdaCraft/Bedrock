@@ -23,18 +23,14 @@
  */
 package com.helion3.bedrock.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.helion3.bedrock.Bedrock;
+import com.helion3.bedrock.util.Format;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.service.pagination.PaginationList;
-import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.action.TextActions;
 
-import com.helion3.bedrock.Bedrock;
-import com.helion3.bedrock.util.Format;
+import java.util.List;
 
 public class WarpsCommand {
     private WarpsCommand() {}
@@ -51,21 +47,8 @@ public class WarpsCommand {
                 return CommandResult.success();
             }
 
-            // Build pagination
-            PaginationService service = Bedrock.getGame().getServiceManager().provide(PaginationService.class).get();
-            PaginationList.Builder pagination = service.builder();
-
-            // Changed to 'runCommand(/warp ..)' so that proper permission checks etc can be carried out
-        	// if the user clicks a warp in the future when they may be in jail, or have had permissions removed.
-            ArrayList<Text> contents = new ArrayList<>();
-            for (String warpName : warps) {
-                Text.Builder builder = Text.builder().append(Format.message(warpName));
-                builder.onClick(TextActions.runCommand("/warp " + warpName));
-                contents.add(builder.build());
-            }
-
-            pagination.contents(contents);
-            pagination.sendTo(source);
+            PaginationList list = Bedrock.getWarpManager().buildList(Format.heading("Warps"), warps.stream());
+            list.sendTo(source);
 
             return CommandResult.success();
         }).build();

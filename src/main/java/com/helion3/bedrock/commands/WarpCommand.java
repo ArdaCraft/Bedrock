@@ -23,18 +23,20 @@
  */
 package com.helion3.bedrock.commands;
 
-import java.util.Optional;
-
+import com.helion3.bedrock.Bedrock;
+import com.helion3.bedrock.commands.element.WarpElement;
+import com.helion3.bedrock.util.Format;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.util.Tuple;
 import org.spongepowered.api.world.World;
 
-import com.helion3.bedrock.Bedrock;
-import com.helion3.bedrock.util.Format;
+import java.util.Collection;
+import java.util.Optional;
 
 public class WarpCommand {
     private WarpCommand() {}
@@ -42,7 +44,7 @@ public class WarpCommand {
     public static CommandSpec getCommand() {
         return CommandSpec.builder()
         .arguments(
-            GenericArguments.remainingJoinedStrings(Text.of("name"))
+                WarpElement.of("warp")
         )
         .description(Text.of("Teleport to a named location."))
         .permission("bedrock.warp")
@@ -58,17 +60,21 @@ public class WarpCommand {
                 return CommandResult.empty();
             }
 
-            String name = args.<String>getOne("name").get();
-            Optional<Transform<World>> transform = Bedrock.getWarpManager().getWarp2(name);
-
-            if (!transform.isPresent()) {
-                source.sendMessage(Format.subdued("No warp exists with that name."));
-                Bedrock.getWarpManager().getMatchingWarps(name).sendTo(source);
+            Optional<Tuple<String, Transform<World>>> warp = args.getOne("warp");
+            if (warp.isPresent()) {
+                player.sendMessage(Format.heading(String.format("Teleporting to %s.", warp.get().getFirst())));
+                player.setTransform(warp.get().getSecond());
                 return CommandResult.success();
             }
 
-            player.setTransform(transform.get());
-            source.sendMessage(Format.heading(String.format("Teleporting to %s.", name)));
+            Collection<Tuple<String, Transform<World>>> warps = args.getAll("warp");
+            if (warps.size() > 0) {
+                PaginationList list = Bedrock.getWarpManager().buildList(Format.heading("Matching Warps"), warps.stream().map(Tuple::getFirst));
+                list.sendTo(player);
+                return CommandResult.success();
+            }
+
+            player.sendMessage(Format.subdued("Could not find a matching warp."));
 
             return CommandResult.success();
         }).build();
