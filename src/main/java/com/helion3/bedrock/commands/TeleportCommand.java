@@ -32,8 +32,6 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
-import java.util.Optional;
-
 public class TeleportCommand {
     private TeleportCommand() {}
 

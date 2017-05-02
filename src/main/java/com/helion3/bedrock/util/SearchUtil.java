@@ -11,22 +11,33 @@ import java.util.stream.Collectors;
  */
 public class SearchUtil {
 
-    public static List<String> search(String query, Collection<String> data) {
+    public static List<String> search(String query, Collection<String> list) {
         String search = query.toLowerCase();
         String noSpace = search.endsWith(" ") ? search : search.replaceAll("[^\\S]+", "");
 
         List<Result<String>> results = new LinkedList<>();
-        for (String value : data) {
+        for (String value : list) {
             if (value.equals(search)) {
                 return Collections.singletonList(value);
-            } else if (value.startsWith(search)) {
-                results.add(new Result<>(value, 0, value.length() - search.length()));
-            } else if (value.contains(search)) {
-                results.add(new Result<>(value, 1, value.indexOf(search)));
-            } else if (value.startsWith(noSpace)) {
-                results.add(new Result<>(value, 2, value.length() - noSpace.length()));
-            } else if (value.contains(noSpace)) {
-                results.add(new Result<>(value, 3, value.indexOf(noSpace)));
+            }
+
+            String name = value.toLowerCase();
+            if (name.startsWith(search)) {
+                results.add(new Result<>(value, 0, name.length() - search.length()));
+                continue;
+            }
+            if (name.contains(search)) {
+                results.add(new Result<>(value, 1, name.indexOf(search)));
+                continue;
+            }
+
+            String noSpaceName = name.replaceAll("[^\\S]+", "");
+            if (noSpaceName.startsWith(noSpace)) {
+                results.add(new Result<>(value, 2, noSpaceName.length() - noSpace.length()));
+                continue;
+            }
+            if (noSpaceName.contains(noSpace)) {
+                results.add(new Result<>(value, 3, noSpaceName.indexOf(noSpace)));
             }
         }
 

@@ -37,7 +37,6 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.Optional;
-import java.util.UUID;
 
 public class HomeCommand {
     private HomeCommand() {}

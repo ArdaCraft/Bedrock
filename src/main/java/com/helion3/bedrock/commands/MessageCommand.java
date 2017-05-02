@@ -24,7 +24,6 @@
 package com.helion3.bedrock.commands;
 
 import com.helion3.bedrock.Bedrock;
-import com.helion3.bedrock.util.Format;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.GenericArguments;

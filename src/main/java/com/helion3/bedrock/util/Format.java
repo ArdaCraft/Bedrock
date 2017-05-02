@@ -24,7 +24,6 @@
 package com.helion3.bedrock.util;
 
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 
 import static com.google.common.base.Preconditions.checkNotNull;

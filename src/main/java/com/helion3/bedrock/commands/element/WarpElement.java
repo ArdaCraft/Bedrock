@@ -30,7 +30,8 @@ public class WarpElement extends CommandElement {
     @Nullable
     @Override
     protected Object parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
-        String joined = join(args);
+        String joined = args.getRaw();
+        goToEnd(args);
 
         List<String> all = getMatches(joined);
         if (all.size() == 1) {
@@ -57,35 +58,25 @@ public class WarpElement extends CommandElement {
 
     @Override
     public List<String> complete(CommandSource src, CommandArgs args, CommandContext context) {
-        String joined = safeJoin(args);
+        String joined = args.getRaw();
+        goToEnd(args);
+
         if (!joined.isEmpty()) {
-            return getMatches(joined);
+            List<String> matches = getMatches(joined);
+            matches.remove(joined);
+            return matches;
         }
+
         return Collections.emptyList();
     }
 
-    private String safeJoin(CommandArgs args) {
-        StringBuilder builder = new StringBuilder();
-
-        do {
-            Optional<String> next = args.nextIfPresent();
-            if (next.isPresent()) {
-                if (builder.length() > 0) {
-                    builder.append(' ');
-                }
-                builder.append(next.get());
+    private void goToEnd(CommandArgs args) {
+        try {
+            while (args.hasNext()) {
+                args.next();
             }
-        } while (args.hasNext());
-
-        return builder.toString();
-    }
-
-    private String join(CommandArgs args) throws ArgumentParseException {
-        StringBuilder builder = new StringBuilder(args.next());
-        while (args.hasNext()) {
-            builder.append(' ').append(args.next());
+        } catch (ArgumentParseException ignored) {
         }
-        return builder.toString();
     }
 
     private List<String> getMatches(String input) {
