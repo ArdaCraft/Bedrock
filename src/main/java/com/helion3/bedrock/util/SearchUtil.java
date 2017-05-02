@@ -17,11 +17,11 @@ public class SearchUtil {
 
         List<Result<String>> results = new LinkedList<>();
         for (String value : list) {
-            if (value.equals(search)) {
+            String name = value.toLowerCase();
+
+            if (name.equals(search)) {
                 return Collections.singletonList(value);
             }
-
-            String name = value.toLowerCase();
             if (name.startsWith(search)) {
                 results.add(new Result<>(value, 0, name.length() - search.length()));
                 continue;
