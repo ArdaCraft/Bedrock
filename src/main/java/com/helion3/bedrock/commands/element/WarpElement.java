@@ -17,6 +17,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author dags <dags@dags.me>
@@ -33,7 +35,7 @@ public class WarpElement extends CommandElement {
         String joined = args.getRaw();
         goToEnd(args);
 
-        List<String> all = getMatches(joined);
+        List<String> all = getMatches(joined).collect(Collectors.toList());
         if (all.size() == 1) {
             String name = all.get(0);
             Optional<Transform<World>> warp = Bedrock.getWarpManager().getWarp2(all.get(0));
@@ -62,9 +64,9 @@ public class WarpElement extends CommandElement {
         goToEnd(args);
 
         if (!joined.isEmpty()) {
-            List<String> matches = getMatches(joined);
-            matches.remove(joined);
-            return matches;
+            return getMatches(joined)
+                    .filter(s -> !s.equalsIgnoreCase(joined))
+                    .collect(Collectors.toList());
         }
 
         return Collections.emptyList();
@@ -79,7 +81,7 @@ public class WarpElement extends CommandElement {
         }
     }
 
-    private List<String> getMatches(String input) {
+    private Stream<String> getMatches(String input) {
         List<String> all = Bedrock.getWarpManager().listWarps();
         return SearchUtil.search(input, all);
     }

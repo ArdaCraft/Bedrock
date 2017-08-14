@@ -5,13 +5,14 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author dags <dags@dags.me>
  */
 public class SearchUtil {
 
-    public static List<String> search(String query, Collection<String> list) {
+    public static Stream<String> search(String query, Collection<String> list) {
         String search = query.toLowerCase();
         String noSpace = search.endsWith(" ") ? search : search.replaceAll("[^\\S]+", "");
 
@@ -20,7 +21,7 @@ public class SearchUtil {
             String name = value.toLowerCase();
 
             if (name.equals(search)) {
-                return Collections.singletonList(value);
+                return Stream.of(value);
             }
             if (name.startsWith(search)) {
                 results.add(new Result<>(value, 0, name.length() - search.length()));
@@ -41,7 +42,7 @@ public class SearchUtil {
             }
         }
 
-        return results.stream().distinct().sorted().map(Result::getValue).collect(Collectors.toList());
+        return results.stream().distinct().sorted().map(Result::getValue);
     }
 
     private static class Result<T> implements Comparable<Result<T>> {
