@@ -32,45 +32,65 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
+import java.util.Collection;
+import java.util.Optional;
+
 public class TeleportCommand {
     private TeleportCommand() {}
 
     public static CommandSpec getCommand() {
         return CommandSpec.builder()
         .arguments(
-            GenericArguments.playerOrSource(Text.of("player")),
-            GenericArguments.optional(GenericArguments.player(Text.of("target")))
+            GenericArguments.player(Text.of("player1")),
+            GenericArguments.optional(GenericArguments.player(Text.of("player2")))
         )
         .description(Text.of("Teleport to another player."))
         .permission("bedrock.tp")
         .executor((source, args) -> {
-            if (!(source instanceof Player)) {
-                source.sendMessage(Format.error("Only players may use this command."));
-                return CommandResult.empty();
-            }
+            Optional<Player> player1 = getBestMatch(args.getAll("player1"));
+            Optional<Player> player2 = getBestMatch(args.getAll("player2"));
 
-            Player sourceOrTarget = args.<Player>getOne("player").get();
-            Player target;
+            if (player1.isPresent()) {
+                Player from = player1.get();
+                Player to;
 
-            if (args.<Player>getOne("target").isPresent()) {
-                target = args.<Player>getOne("target").get();
-
-                if (target.get(Keys.VANISH).orElse(false) && !source.hasPermission("bedrock.vanishtp")) {
+                if (player2.isPresent()) { // `/tp <player1> <player2>`
+                    to = player2.get();
+                } else if (source instanceof Player) {
+                    to = from;
+                    from = (Player) source; // `/tp <player>`
+                } else {
+                    source.sendMessage(Format.error("Only players may use this command."));
                     return CommandResult.empty();
                 }
-            } else {
-                target = sourceOrTarget;
-                sourceOrTarget = (Player) source;
+
+                if (from == to) {
+                    source.sendMessage(Format.error("Cannot tp to self"));
+                    return CommandResult.empty();
+                }
+
+                if (to.get(Keys.VANISH).orElse(false) && !source.hasPermission("bedrock.vanishtp")) {
+                    return CommandResult.empty();
+                }
+
+                if (Bedrock.getJailManager().isFrozen(from)) {
+                    source.sendMessage(Format.error("Player is frozen and may not travel."));
+                    return CommandResult.empty();
+                }
+
+                Bedrock.getTeleportManager().teleport(from, to);
             }
-
-            if (Bedrock.getJailManager().isFrozen(sourceOrTarget)) {
-                source.sendMessage(Format.error("Player is frozen and may not travel."));
-                return CommandResult.empty();
-            }
-
-            Bedrock.getTeleportManager().teleport(sourceOrTarget, target);
-
             return CommandResult.success();
         }).build();
+    }
+
+    private static Optional<Player> getBestMatch(Collection<Player> players) {
+        if (players.isEmpty()) {
+            return Optional.empty();
+        }
+        if (players.size() == 1) {
+            return Optional.ofNullable(players.iterator().next());
+        }
+        return players.stream().sorted((p1, p2) -> Integer.compare(p1.getName().length(), p2.getName().length())).findFirst();
     }
 }
