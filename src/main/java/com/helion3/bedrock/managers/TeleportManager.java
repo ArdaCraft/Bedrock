@@ -26,6 +26,7 @@ package com.helion3.bedrock.managers;
 import com.flowpowered.math.vector.Vector3d;
 import com.helion3.bedrock.Bedrock;
 import com.helion3.bedrock.util.Format;
+import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -142,12 +143,8 @@ public class TeleportManager {
      * @param source Player to teleport
      * @param target Player teleporting to
      */
-    public void teleport(Player source, Player target) {
-        // Teleport
-        source.setLocation(target.getLocation());
-
-        // Message
-        source.sendMessage(Format.success(String.format("Teleporting you to %s", target.getName())));
+    public boolean teleport(Player source, Player target) {
+        return teleport(source, target.getTransform(), target.getName());
     }
 
     /**
@@ -156,13 +153,10 @@ public class TeleportManager {
      * @param source Player to teleport
      * @param position Vector3d teleporting to
      */
-    public void teleport(Player source, Vector3d position) {
-        // Teleport
-        source.setLocation(source.getWorld().getLocation(position));
-
-        // Message
-        source.sendMessage(Format.success(
-            String.format("Teleporting you to %f %f %f", position.getX(), position.getY(), position.getZ())));
+    public boolean teleport(Player source, Vector3d position) {
+        Transform<World> transform = source.getTransform().setPosition(position);
+        String name = String.format("%f %f %f", position.getX(), position.getY(), position.getZ());
+        return teleport(source, transform, name);
     }
 
     /**
@@ -171,11 +165,20 @@ public class TeleportManager {
      * @param source Player to teleport
      * @param world World teleporting to
      */
-    public void teleport(Player source, World world) {
-        // Teleport
-        source.transferToWorld(world.getUniqueId(), world.getSpawnLocation().getPosition());
+    public boolean teleport(Player source, World world) {
+        Transform<World> transform = source.getTransform().setLocation(world.getSpawnLocation());
+        return teleport(source, transform, world.getName());
+    }
 
-        // Message
-        source.sendMessage(Format.success(String.format("Teleporting you to world %s", world.getName())));
+    public boolean teleport(Player source, Transform<World> transform, String description) {
+        // Teleport
+        boolean result = source.setTransform(transform);
+
+        if (result) {
+            // Message
+            source.sendMessage(Format.success(String.format("Teleporting you to %s", description)));
+        }
+
+        return result;
     }
 }

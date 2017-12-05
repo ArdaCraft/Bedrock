@@ -13,7 +13,6 @@ import org.spongepowered.api.util.Tuple;
 import org.spongepowered.api.world.World;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -60,16 +59,17 @@ public class WarpElement extends CommandElement {
 
     @Override
     public List<String> complete(CommandSource src, CommandArgs args, CommandContext context) {
-        String joined = args.getRaw();
-        goToEnd(args);
+        String input = args.getRaw().toLowerCase();
+        int index = input.indexOf(' ') + 1;
 
-        if (!joined.isEmpty()) {
-            return getMatches(joined)
-                    .filter(s -> !s.equalsIgnoreCase(joined))
-                    .collect(Collectors.toList());
+        List<String> completions = new LinkedList<>();
+        for (String warp : Bedrock.getWarpManager().listWarps()) {
+            if (warp.toLowerCase().startsWith(input)) {
+                completions.add(warp.substring(index));
+            }
         }
 
-        return Collections.emptyList();
+        return completions;
     }
 
     private void goToEnd(CommandArgs args) {
