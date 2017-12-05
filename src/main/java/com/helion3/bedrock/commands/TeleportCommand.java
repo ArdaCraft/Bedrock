@@ -37,6 +37,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.World;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
 
 public class TeleportCommand {
@@ -67,28 +68,37 @@ public class TeleportCommand {
             }
 
             if (player1.isPresent()) {
-                Player to;
+                from = player1.get();
 
-                if (player2.isPresent()) { // `/tp <player1> <player2>`
-                    from = player1.get();
-                    to = player2.get();
-                } else if (source instanceof Player) {
-                    from = (Player) source;
-                    to = player1.get();
-                } else if (position.isPresent()) { // (Console) `/tp <other> <x,y,z>`
-                    from = player1.get();
-                    to = from;
+                if (position.isPresent()) { // `/tp <player1> <xyz>`
+                    // isn't teleporting self & doesn't have permission to teleport other players
+                    if (from != source && !source.hasPermission("bedrock.othertp")) {
+                        throw new CommandException(Format.error("You do not have permission to do that."));
+                    }
                 } else {
-                    throw new CommandException(Format.error("Console must specify a second player or a position to teleport the target to."));
-                }
+                    final Player to; // compile error if we do not assign 'to'
 
-                // can't tp to vanished players
-                if (to.get(Keys.VANISH).orElse(false) && !source.hasPermission("bedrock.vanishtp")) {
-                    return CommandResult.empty();
-                }
+                    if (player2.isPresent()) { // `/tp <player1> <player2>`
+                        if (source.hasPermission("bedrock.othertp")) {
+                            to = player2.get();
+                        } else {
+                            throw new CommandException(Format.error("You do not have permission to do that."));
+                        }
+                    } else if (source instanceof Player) { // `/tp (self) <player1>`
+                        from = (Player) source;
+                        to = player1.get();
+                    } else {
+                        throw new CommandException(Format.error("Must specify a second player or position to teleport the target to."));
+                    }
 
-                transform = to.getTransform();
-                description = to.getName();
+                    // can't tp to vanished players
+                    if (to.get(Keys.VANISH).orElse(false) && !source.hasPermission("bedrock.vanishtp")) {
+                        return CommandResult.empty();
+                    }
+
+                    transform = to.getTransform();
+                    description = to.getName();
+                }
             }
 
             // modify the transform if a position was provided
@@ -121,6 +131,6 @@ public class TeleportCommand {
         if (players.size() == 1) {
             return Optional.ofNullable(players.iterator().next());
         }
-        return players.stream().sorted((p1, p2) -> Integer.compare(p1.getName().length(), p2.getName().length())).findFirst();
+        return players.stream().sorted(Comparator.comparingInt(p -> p.getName().length())).findFirst();
     }
 }

@@ -13,9 +13,7 @@ import org.spongepowered.api.util.Tuple;
 import org.spongepowered.api.world.World;
 
 import javax.annotation.Nullable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -60,16 +58,57 @@ public class WarpElement extends CommandElement {
     @Override
     public List<String> complete(CommandSource src, CommandArgs args, CommandContext context) {
         String input = args.getRaw().toLowerCase();
-        int index = input.indexOf(' ') + 1;
+        int start = input.lastIndexOf(' ') + 1;
+
+        List<String> warps = Bedrock.getWarpManager().listWarps();
+        List<String> matches = new ArrayList<>(warps.size());
+        for (String s : warps) {
+            if (s.toLowerCase().startsWith(input)) {
+                matches.add(s.substring(start));
+            }
+        }
 
         List<String> completions = new LinkedList<>();
-        for (String warp : Bedrock.getWarpManager().listWarps()) {
-            if (warp.toLowerCase().startsWith(input)) {
-                completions.add(warp.substring(index));
+        Set<String> unique = new HashSet<>();
+        for (int i = 0; i < matches.size(); i++) {
+            String s0 = matches.get(i);
+            String shortest = s0;
+
+            for (int j = 0; j < matches.size(); j++) {
+                if (i == j) {
+                    continue;
+                }
+
+                String s1 = matches.get(j);
+                int index = commonIndex(s0, s1);
+                int end = s0.lastIndexOf(' ', index);
+                if (end < 0) {
+                    end = s0.indexOf(' ', end);
+                    end = end == -1 ? s0.length() : end;
+                }
+
+                if (end > 0 && end < shortest.length()) {
+                    shortest = s0.substring(0, end);
+                }
+            }
+
+            if (unique.add(shortest)) {
+                completions.add(shortest);
             }
         }
 
         return completions;
+    }
+
+    private static int commonIndex(String s0, String s1) {
+        for (int i = 0; i < s0.length() && i < s1.length(); i++) {
+            char c0 = Character.toLowerCase(s0.charAt(i));
+            char c1 = Character.toLowerCase(s1.charAt(i));
+            if (c0 != c1) {
+                return i;
+            }
+        }
+        return Math.min(s0.length(), s1.length());
     }
 
     private void goToEnd(CommandArgs args) {
