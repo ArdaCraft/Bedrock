@@ -25,7 +25,6 @@ package com.helion3.bedrock;
 
 import com.google.inject.Inject;
 import com.helion3.bedrock.commands.*;
-import com.helion3.bedrock.data.invincibility.ImmutableInvincibilityData;
 import com.helion3.bedrock.data.invincibility.InvincibilityData;
 import com.helion3.bedrock.data.invincibility.InvincibilityDataManipulatorBuilder;
 import com.helion3.bedrock.listeners.*;
@@ -38,6 +37,8 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.EventContext;
+import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
@@ -73,13 +74,13 @@ public class Bedrock {
 
     @Listener
     public void onPreInit(GamePreInitializationEvent event) {
-        Sponge.getDataManager().register(InvincibilityData.class, ImmutableInvincibilityData.class, new InvincibilityDataManipulatorBuilder());
+        Sponge.getDataManager().registerBuilder(InvincibilityData.class, new InvincibilityDataManipulatorBuilder());
     }
 
     @Listener
     public void onServerInit(GameInitializationEvent event) {
         plugin = this;
-        bedrockCause = Cause.source(container).build();
+        bedrockCause = Cause.builder().build(EventContext.builder().add(EventContextKeys.PLUGIN, container).build());
         parentDirectory = defaultConfig.getParentFile();
 
         // Load configuration files
