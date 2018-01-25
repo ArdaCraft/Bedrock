@@ -84,10 +84,10 @@ public class Configuration {
             // Save
             try {
                 configManager.save(rootNode);
-            } catch(IOException e) {
+            } catch(Throwable e) {
                 e.printStackTrace();
             }
-        } catch (IOException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }

@@ -55,7 +55,7 @@ public class NamedConfiguration {
 
             // Save
             save();
-        } catch (IOException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
@@ -63,7 +63,7 @@ public class NamedConfiguration {
     public void save() {
         try {
             configLoader.save(rootNode);
-        } catch (IOException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }

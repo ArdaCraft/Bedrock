@@ -72,7 +72,7 @@ public class PlayerConfiguration {
 
             // Save
             save();
-        } catch (IOException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
@@ -80,7 +80,7 @@ public class PlayerConfiguration {
     public void save() {
         try {
             configLoader.save(rootNode);
-        } catch (IOException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
