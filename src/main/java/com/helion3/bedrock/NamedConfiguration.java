@@ -26,27 +26,44 @@ package com.helion3.bedrock;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.commented.SimpleCommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 
 import java.io.File;
-import java.io.IOException;
 
 public class NamedConfiguration {
+
     private ConfigurationLoader<CommentedConfigurationNode> configLoader;
-    private ConfigurationNode rootNode = null;;
+    private ConfigurationNode rootNode = SimpleCommentedConfigurationNode.root();
+
+    private final String name;
+    private final Object lock = new Object();
 
     public NamedConfiguration(String name) {
+        this.name = name;
+    }
+
+    public NamedConfiguration load() {
+        Bedrock.getAsyncExecutor().submit(this::loadInternal);
+        return this;
+    }
+
+    public void save() {
+        Bedrock.getAsyncExecutor().submit(this::saveInternal);
+    }
+
+    private void loadInternal() {
         try {
             File conf = new File(Bedrock.getParentDirectory().getAbsolutePath() + "/" + name + ".conf");
             boolean fileCreated = false;
 
-            if (!conf.exists()) {
-                conf.createNewFile();
+            if (!conf.exists() && conf.createNewFile()) {
                 fileCreated = true;
             }
 
-            configLoader = HoconConfigurationLoader.builder().setFile(conf).build();
+            HoconConfigurationLoader configLoader = HoconConfigurationLoader.builder().setFile(conf).build();
+            ConfigurationNode rootNode;
             if (fileCreated) {
                 rootNode = configLoader.createEmptyNode(ConfigurationOptions.defaults());
             } else {
@@ -54,17 +71,28 @@ public class NamedConfiguration {
             }
 
             // Save
-            save();
-        } catch (IOException e) {
+            configLoader.save(rootNode);
+
+            synchronized (lock) {
+                this.rootNode = rootNode;
+                this.configLoader = configLoader;
+            }
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
 
-    public void save() {
-        try {
-            configLoader.save(rootNode);
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void saveInternal() {
+        synchronized (lock) {
+            if (configLoader == null) {
+                return;
+            }
+
+            try {
+                configLoader.save(rootNode);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -74,7 +102,9 @@ public class NamedConfiguration {
      * @return ConfigurationNode
      */
     public ConfigurationNode getRootNode() {
-        return rootNode;
+        synchronized (lock) {
+            return rootNode;
+        }
     }
 
     /**
@@ -84,6 +114,8 @@ public class NamedConfiguration {
      * @return ConfigurationNode
      */
     public ConfigurationNode getNode(Object... path) {
-        return rootNode.getNode(path);
+        synchronized (lock) {
+            return rootNode.getNode(path);
+        }
     }
 }

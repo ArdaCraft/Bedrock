@@ -25,8 +25,6 @@ package com.helion3.bedrock;
 
 import com.google.inject.Inject;
 import com.helion3.bedrock.commands.*;
-import com.helion3.bedrock.data.invincibility.InvincibilityData;
-import com.helion3.bedrock.data.invincibility.InvincibilityDataManipulatorBuilder;
 import com.helion3.bedrock.listeners.*;
 import com.helion3.bedrock.managers.*;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -40,9 +38,9 @@ import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.scheduler.SpongeExecutorService;
 
 import java.io.File;
 
@@ -59,6 +57,7 @@ public class Bedrock {
     private static Bedrock plugin;
     private static TeleportManager teleportManager;
     private static WarpManager warpManager;
+    private static SpongeExecutorService executor;
 
     @Inject
     @DefaultConfig(sharedRoot = false)
@@ -73,13 +72,9 @@ public class Bedrock {
     private ConfigurationLoader<CommentedConfigurationNode> configManager;
 
     @Listener
-    public void onPreInit(GamePreInitializationEvent event) {
-        Sponge.getDataManager().registerBuilder(InvincibilityData.class, new InvincibilityDataManipulatorBuilder());
-    }
-
-    @Listener
     public void onServerInit(GameInitializationEvent event) {
         plugin = this;
+        executor = Sponge.getScheduler().createAsyncExecutor(plugin);
         bedrockCause = Cause.builder().build(EventContext.builder().add(EventContextKeys.PLUGIN, container).build());
         parentDirectory = defaultConfig.getParentFile();
 
@@ -264,6 +259,10 @@ public class Bedrock {
      */
     public static WarpManager getWarpManager() {
         return warpManager;
+    }
+
+    public static SpongeExecutorService getAsyncExecutor() {
+        return executor;
     }
 
     /**

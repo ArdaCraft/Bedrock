@@ -23,7 +23,7 @@
  */
 package com.helion3.bedrock.listeners;
 
-import com.helion3.bedrock.util.BedrockKeys;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
@@ -34,7 +34,7 @@ public class DamageEntityListener {
         if (event.getTargetEntity() instanceof Player) {
             Player player = (Player) event.getTargetEntity();
 
-            if (player.get(BedrockKeys.IS_INVINCIBLE).orElse(false)) {
+            if (player.get(Keys.INVULNERABLE).orElse(false)) {
                 event.setCancelled(true);
             }
         }

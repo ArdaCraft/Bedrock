@@ -23,11 +23,10 @@
  */
 package com.helion3.bedrock.commands;
 
-import com.helion3.bedrock.data.invincibility.InvincibilityData;
-import com.helion3.bedrock.util.BedrockKeys;
 import com.helion3.bedrock.util.Format;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
@@ -45,10 +44,9 @@ public class GodCommand {
             }
 
             Player player = (Player) source;
-            boolean wasInvincible = player.get(BedrockKeys.IS_INVINCIBLE).orElse(false);
-
+            boolean wasInvincible = player.get(Keys.INVULNERABLE).orElse(false);
             // Flip boolean
-            player.offer(new InvincibilityData(!wasInvincible));
+            player.offer(Keys.INVULNERABLE, !wasInvincible);
 
             // Message
             source.sendMessage(Format.success("You are now " + (wasInvincible ? "a mortal again." : "invincible.")));

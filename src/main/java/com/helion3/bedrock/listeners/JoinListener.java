@@ -24,7 +24,7 @@
 package com.helion3.bedrock.listeners;
 
 import com.helion3.bedrock.Bedrock;
-import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.mutable.entity.JoinData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -43,7 +43,8 @@ public class JoinListener {
         Bedrock.getPlayerConfigManager().loadPlayer(player);
 
         // Is brand new?
-        if (player.get(Keys.FIRST_DATE_PLAYED).get().equals(player.get(Keys.LAST_DATE_PLAYED).get())) {
+        JoinData joinData = player.getJoinData();
+        if (joinData.firstPlayed().get().equals(joinData.lastPlayed().get())) {
             // Force spawn position because vanilla has a "fuzz" radius around spawn
             Location<World> spawn = player.getWorld().getLocation(player.getWorld().getProperties().getSpawnPosition());
 

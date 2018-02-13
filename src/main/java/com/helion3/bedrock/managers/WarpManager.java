@@ -46,7 +46,7 @@ public class WarpManager {
     private final NamedConfiguration config;
 
     public WarpManager() {
-        config = new NamedConfiguration("warps");
+        config = new NamedConfiguration("warps").load();
     }
 
     /**

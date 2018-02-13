@@ -39,7 +39,7 @@ public class PlayerConfigManager {
      * @param player
      */
     public void loadPlayer(Player player) {
-        PlayerConfiguration config = getPlayerConfig(player.getUniqueId());
+        PlayerConfiguration config = getPlayerConfig(player.getUniqueId()).load();
         playerConfigs.put(player.getUniqueId(), config);
     }
 
