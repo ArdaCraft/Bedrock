@@ -1,18 +1,18 @@
 /**
  * This file is part of Bedrock, licensed under the MIT License (MIT).
- *
+ * <p>
  * Copyright (c) 2016 Helion3 http://helion3.com/
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,9 +25,6 @@ package com.helion3.bedrock;
 
 import com.google.inject.Inject;
 import com.helion3.bedrock.commands.*;
-import com.helion3.bedrock.data.invincibility.ImmutableInvincibilityData;
-import com.helion3.bedrock.data.invincibility.InvincibilityData;
-import com.helion3.bedrock.data.invincibility.InvincibilityDataManipulatorBuilder;
 import com.helion3.bedrock.listeners.*;
 import com.helion3.bedrock.managers.*;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -39,14 +36,15 @@ import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.scheduler.SpongeExecutorService;
 
 import java.io.File;
 
 @Plugin(id = "bedrock", name = "bedrock", version = "1.1.6", description = "Essential commands for Sponge servers")
 public class Bedrock {
+
     private static AFKManager afkManager;
     private static Configuration config;
     private static Game game;
@@ -58,6 +56,7 @@ public class Bedrock {
     private static Bedrock plugin;
     private static TeleportManager teleportManager;
     private static WarpManager warpManager;
+    private static SpongeExecutorService executor;
 
     @Inject
     @DefaultConfig(sharedRoot = false)
@@ -72,13 +71,9 @@ public class Bedrock {
     private ConfigurationLoader<CommentedConfigurationNode> configManager;
 
     @Listener
-    public void onPreInit(GamePreInitializationEvent event) {
-        Sponge.getDataManager().register(InvincibilityData.class, ImmutableInvincibilityData.class, new InvincibilityDataManipulatorBuilder());
-    }
-
-    @Listener
     public void onServerInit(GameInitializationEvent event) {
         plugin = this;
+        executor = Sponge.getScheduler().createAsyncExecutor(plugin);
         bedrockCause = Cause.source(container).build();
         parentDirectory = defaultConfig.getParentFile();
 
@@ -263,6 +258,10 @@ public class Bedrock {
      */
     public static WarpManager getWarpManager() {
         return warpManager;
+    }
+
+    public static SpongeExecutorService getAsyncExecutor() {
+        return executor;
     }
 
     /**

@@ -6,39 +6,40 @@ import java.util.ArrayDeque;
  * A bounded, first in last out, array-backed Deque that evicts from the head when full.
  */
 public class BoundedDeque<T> extends ArrayDeque<T> {
-	private static final long serialVersionUID = 8884216011915712340L;
 
-	private final int capacity;
+    private static final long serialVersionUID = 8884216011915712340L;
 
-	public BoundedDeque(int size) {
-		this.capacity = size;
-	}
+    private final int capacity;
 
-	@Override
-	public boolean add(T t) {
-		if (this.size() > capacity) {
-			this.removeFirst();
-		}
-		return super.add(t);
-	}
+    public BoundedDeque(int size) {
+        this.capacity = size;
+    }
 
-	@Override
-	public T poll() {
-		return super.pollLast();
-	}
+    @Override
+    public boolean add(T t) {
+        if (this.size() > capacity) {
+            this.removeFirst();
+        }
+        return super.add(t);
+    }
 
-	@Override
-	public T peek() {
-		return super.peekLast();
-	}
+    @Override
+    public T poll() {
+        return super.pollLast();
+    }
 
-	@Override
-	public T pop() {
-		return super.removeLast();
-	}
+    @Override
+    public T peek() {
+        return super.peekLast();
+    }
 
-	@Override
-	public T remove() {
-		return super.removeLast();
-	}
+    @Override
+    public T pop() {
+        return super.removeLast();
+    }
+
+    @Override
+    public T remove() {
+        return super.removeLast();
+    }
 }

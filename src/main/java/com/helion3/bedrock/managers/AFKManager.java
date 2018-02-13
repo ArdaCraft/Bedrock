@@ -1,18 +1,18 @@
 /**
  * This file is part of Bedrock, licensed under the MIT License (MIT).
- *
+ * <p>
  * Copyright (c) 2016 Helion3 http://helion3.com/
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class AFKManager {
+
     private final Map<Player, Long> afkPlayers = new HashMap<>();
     private final Map<Player, Long> lastActivity = new HashMap<>();
     private Task afkKick;
@@ -140,25 +141,25 @@ public class AFKManager {
      */
     private void scheduleActivityChecks() {
         inactivity = Bedrock.getGame().getScheduler().createTaskBuilder()
-            .delay(10L, TimeUnit.SECONDS)
-            .interval(10L, TimeUnit.SECONDS)
-            .execute(() -> {
-                int activityThreshhold = Bedrock.getConfig().getNode("afk", "timers", "inactiveAfter").getInt();
+                .delay(10L, TimeUnit.SECONDS)
+                .interval(10L, TimeUnit.SECONDS)
+                .execute(() -> {
+                    int activityThreshhold = Bedrock.getConfig().getNode("afk", "timers", "inactiveAfter").getInt();
 
-                // Iterate all inactive players
-                Iterator<Map.Entry<Player, Long>> iterator = lastActivity.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry<Player, Long> entry = iterator.next();
+                    // Iterate all inactive players
+                    Iterator<Map.Entry<Player, Long>> iterator = lastActivity.entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry<Player, Long> entry = iterator.next();
 
-                    if (now() - entry.getValue() >= activityThreshhold) {
-                        // Remove entry
-                        iterator.remove();
+                        if (now() - entry.getValue() >= activityThreshhold) {
+                            // Remove entry
+                            iterator.remove();
 
-                        // Set AFK
-                        setAfk(entry.getKey(), true);
+                            // Set AFK
+                            setAfk(entry.getKey(), true);
+                        }
                     }
-                }
-            }).submit(Bedrock.getPlugin());
+                }).submit(Bedrock.getPlugin());
     }
 
     /**
@@ -166,29 +167,29 @@ public class AFKManager {
      */
     private void scheduleAFKKicks() {
         afkKick = Bedrock.getGame().getScheduler().createTaskBuilder()
-            .delay(10L, TimeUnit.SECONDS)
-            .interval(10L, TimeUnit.SECONDS)
-            .execute(() -> {
-                int kickThreshhold = Bedrock.getConfig().getNode("afk", "timers", "kickAfter").getInt();
+                .delay(10L, TimeUnit.SECONDS)
+                .interval(10L, TimeUnit.SECONDS)
+                .execute(() -> {
+                    int kickThreshhold = Bedrock.getConfig().getNode("afk", "timers", "kickAfter").getInt();
 
-                // Iterate all AFK players
-                Iterator<Map.Entry<Player, Long>> iterator = afkPlayers.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry<Player, Long> entry = iterator.next();
+                    // Iterate all AFK players
+                    Iterator<Map.Entry<Player, Long>> iterator = afkPlayers.entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry<Player, Long> entry = iterator.next();
 
-                    // Never kick exempt players
-                    if (entry.getKey().hasPermission("bedrock.afk.exempt")) {
-                        continue;
+                        // Never kick exempt players
+                        if (entry.getKey().hasPermission("bedrock.afk.exempt")) {
+                            continue;
+                        }
+
+                        if (now() - entry.getValue() >= kickThreshhold) {
+                            // Remove entry
+                            iterator.remove();
+
+                            // Kick player
+                            entry.getKey().kick(Text.of(TextColors.GOLD, "Kicked for being AFK too long."));
+                        }
                     }
-
-                    if (now() - entry.getValue() >= kickThreshhold) {
-                        // Remove entry
-                        iterator.remove();
-
-                        // Kick player
-                        entry.getKey().kick(Text.of(TextColors.GOLD, "Kicked for being AFK too long."));
-                    }
-                }
-            }).submit(Bedrock.getPlugin());
+                }).submit(Bedrock.getPlugin());
     }
 }

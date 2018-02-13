@@ -1,18 +1,18 @@
 /**
  * This file is part of Bedrock, licensed under the MIT License (MIT).
- *
+ * <p>
  * Copyright (c) 2016 Helion3 http://helion3.com/
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,18 +23,21 @@
  */
 package com.helion3.bedrock.listeners;
 
-import com.helion3.bedrock.util.BedrockKeys;
+import com.helion3.bedrock.Bedrock;
+import com.helion3.bedrock.util.TransientData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 
 public class DamageEntityListener {
+
     @Listener
     public void onEntityDamage(final DamageEntityEvent event) {
         if (event.getTargetEntity() instanceof Player) {
             Player player = (Player) event.getTargetEntity();
+            TransientData data = Bedrock.getPlayerConfigManager().getPlayerConfig(player).getTransientData();
 
-            if (player.get(BedrockKeys.IS_INVINCIBLE).orElse(false)) {
+            if (data.get("bedrock.invincible", () -> false)) {
                 event.setCancelled(true);
             }
         }
