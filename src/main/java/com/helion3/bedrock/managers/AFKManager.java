@@ -53,8 +53,12 @@ public class AFKManager {
      * Cancel running tasks when closing manager.
      */
     public void close() {
-        afkKick.cancel();
-        inactivity.cancel();
+        if (afkKick != null) {
+            afkKick.cancel();
+        }
+        if (inactivity != null) {
+            inactivity.cancel();
+        }
     }
 
     /**
