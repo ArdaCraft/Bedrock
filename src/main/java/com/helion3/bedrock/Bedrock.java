@@ -42,7 +42,7 @@ import org.spongepowered.api.scheduler.SpongeExecutorService;
 
 import java.io.File;
 
-@Plugin(id = "bedrock", name = "bedrock", version = "1.1.6", description = "Essential commands for Sponge servers")
+@Plugin(id = "bedrock", name = "bedrock", version = "1.1.7", description = "Essential commands for Sponge servers")
 public class Bedrock {
 
     private static AFKManager afkManager;
@@ -112,6 +112,7 @@ public class Bedrock {
         game.getCommandManager().register(this, SpyCommand.getCommand(), "spy");
         game.getCommandManager().register(this, StaffCommand.getCommand(), "staff");
         game.getCommandManager().register(this, TeleportCommand.getCommand(), "tp", "teleport");
+        game.getCommandManager().register(this, TeleportAllCommand.getCommand(), "tpall");
         game.getCommandManager().register(this, TeleportAcceptCommand.getCommand(), "tpaccept");
         game.getCommandManager().register(this, TeleportDenyCommand.getCommand(), "tpdeny");
         game.getCommandManager().register(this, TeleportHereCommand.getCommand(), "tphere");
