@@ -23,15 +23,13 @@
  */
 package com.helion3.bedrock.managers;
 
-import com.helion3.bedrock.Bedrock;
+import java.util.ArrayList;
+import java.util.List;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class JailManager {
 
@@ -91,13 +89,13 @@ public class JailManager {
 
     private void setIce(Location<World> loc) {
         if (loc.getBlock().getType().equals(BlockTypes.AIR)) {
-            loc.setBlockType(BlockTypes.PACKED_ICE, Bedrock.getCause());
+            loc.setBlockType(BlockTypes.PACKED_ICE);
         }
     }
 
     private void removeIce(Location<World> loc) {
         if (loc.getBlock().getType().equals(BlockTypes.PACKED_ICE)) {
-            loc.setBlockType(BlockTypes.AIR, Bedrock.getCause());
+            loc.setBlockType(BlockTypes.AIR);
         }
     }
 }

@@ -25,8 +25,22 @@ package com.helion3.bedrock;
 
 import com.google.inject.Inject;
 import com.helion3.bedrock.commands.*;
-import com.helion3.bedrock.listeners.*;
-import com.helion3.bedrock.managers.*;
+import com.helion3.bedrock.listeners.ChangeBlockListener;
+import com.helion3.bedrock.listeners.DamageEntityListener;
+import com.helion3.bedrock.listeners.DeathListener;
+import com.helion3.bedrock.listeners.DisconnectListener;
+import com.helion3.bedrock.listeners.FishingListener;
+import com.helion3.bedrock.listeners.JoinListener;
+import com.helion3.bedrock.listeners.MessageChannelListener;
+import com.helion3.bedrock.listeners.MoveListener;
+import com.helion3.bedrock.listeners.SignListener;
+import com.helion3.bedrock.managers.AFKManager;
+import com.helion3.bedrock.managers.JailManager;
+import com.helion3.bedrock.managers.MessageManager;
+import com.helion3.bedrock.managers.PlayerConfigManager;
+import com.helion3.bedrock.managers.TeleportManager;
+import com.helion3.bedrock.managers.WarpManager;
+import java.io.File;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
@@ -34,13 +48,10 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.SpongeExecutorService;
-
-import java.io.File;
 
 @Plugin(id = "bedrock", name = "bedrock", version = "1.1.7", description = "Essential commands for Sponge servers")
 public class Bedrock {
@@ -64,7 +75,6 @@ public class Bedrock {
 
     @Inject
     private PluginContainer container;
-    private Cause bedrockCause;
 
     @Inject
     @DefaultConfig(sharedRoot = false)
@@ -74,7 +84,6 @@ public class Bedrock {
     public void onServerInit(GameInitializationEvent event) {
         plugin = this;
         executor = Sponge.getScheduler().createAsyncExecutor(plugin);
-        bedrockCause = Cause.source(container).build();
         parentDirectory = defaultConfig.getParentFile();
 
         // Load configuration files
@@ -141,10 +150,6 @@ public class Bedrock {
         game.getEventManager().registerListeners(this, new SignListener());
 
         logger.info("Bedrock started.");
-    }
-
-    public static Cause getCause() {
-        return plugin.bedrockCause;
     }
 
     public static AFKManager getAFKManager() {

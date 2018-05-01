@@ -26,15 +26,13 @@ package com.helion3.bedrock.commands;
 import com.helion3.bedrock.Bedrock;
 import com.helion3.bedrock.PlayerConfiguration;
 import com.helion3.bedrock.util.Format;
+import java.util.Optional;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
-
-import java.util.Optional;
 
 public class SetHomeCommand {
 
@@ -59,8 +57,7 @@ public class SetHomeCommand {
                     PlayerConfiguration config = Bedrock.getPlayerConfigManager().getPlayerConfig(player);
 
                     int homesLimit = -1;
-                    Subject subject = player.getContainingCollection().get(player.getIdentifier());
-                    Optional<String> optionHomeLimit = subject.getOption("homes");
+                    Optional<String> optionHomeLimit = player.getOption("homes");
                     if (optionHomeLimit.isPresent()) {
                         homesLimit = Integer.parseInt(optionHomeLimit.get());
                     }

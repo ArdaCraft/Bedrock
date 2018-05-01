@@ -28,8 +28,6 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.text.Text;
 
 public class InvCommand {
@@ -58,7 +56,7 @@ public class InvCommand {
                         return CommandResult.empty();
                     }
 
-                    player.openInventory(target.getInventory(), Cause.of(NamedCause.source(player)));
+                    player.openInventory(target.getInventory());
 
                     return CommandResult.success();
                 }).build();
