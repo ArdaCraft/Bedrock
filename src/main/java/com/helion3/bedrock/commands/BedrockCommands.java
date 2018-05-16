@@ -26,13 +26,12 @@ package com.helion3.bedrock.commands;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.helion3.bedrock.util.Format;
+import java.util.List;
 import org.spongepowered.api.command.CommandCallable;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-
-import java.util.List;
 
 public class BedrockCommands {
 

@@ -26,14 +26,13 @@ package com.helion3.bedrock.managers;
 import com.flowpowered.math.vector.Vector3d;
 import com.helion3.bedrock.Bedrock;
 import com.helion3.bedrock.util.Format;
+import java.util.HashMap;
+import java.util.Map;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.World;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class TeleportManager {
 

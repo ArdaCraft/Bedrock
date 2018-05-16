@@ -24,15 +24,14 @@
 package com.helion3.bedrock;
 
 import com.helion3.bedrock.util.TransientData;
+import java.io.File;
+import java.util.UUID;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.commented.SimpleCommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
-
-import java.io.File;
-import java.util.UUID;
 
 public class PlayerConfiguration {
 
@@ -57,43 +56,43 @@ public class PlayerConfiguration {
     }
 
     private void loadInternal() {
-        try {
-            // If files do not exist, we must create them
-            File playerDir = new File(Bedrock.getParentDirectory().getAbsolutePath() + "/players");
-            if (!playerDir.exists() && playerDir.mkdirs()) {
-                Bedrock.getLogger().info("Creating new player config directory at mods/bedrock/players");
-            }
+        synchronized (lock) {
+            try {
+                // If files do not exist, we must create them
+                File playerDir = new File(Bedrock.getParentDirectory().getAbsolutePath(), "players");
+                if (!playerDir.exists() && playerDir.mkdirs()) {
+                    Bedrock.getLogger().info("Creating new player config directory at mods/bedrock/players");
+                }
 
-            File playerConf = new File(playerDir.getAbsolutePath() + "/" + uuid + ".conf");
-            boolean fileCreated = false;
+                File playerConf = new File(playerDir.getAbsolutePath(), uuid + ".conf");
+                boolean fileCreated = false;
 
-            if (!playerConf.exists() && playerConf.createNewFile()) {
-                Bedrock.getLogger().info("Creating new player config file at mods/bedrock/players/" + uuid + ".conf");
-                fileCreated = true;
-            }
+                if (!playerConf.exists() && playerConf.createNewFile()) {
+                    Bedrock.getLogger().info("Creating new player config file at mods/bedrock/players/" + uuid + ".conf");
+                    fileCreated = true;
+                }
 
-            HoconConfigurationLoader configLoader = HoconConfigurationLoader.builder().setFile(playerConf).build();
-            ConfigurationNode rootNode;
-            if (fileCreated) {
-                rootNode = configLoader.createEmptyNode(ConfigurationOptions.defaults());
-            } else {
-                rootNode = configLoader.load();
-            }
+                HoconConfigurationLoader configLoader = HoconConfigurationLoader.builder().setFile(playerConf).build();
+                ConfigurationNode rootNode;
+                if (fileCreated) {
+                    rootNode = configLoader.createEmptyNode(ConfigurationOptions.defaults());
+                } else {
+                    rootNode = configLoader.load();
+                }
 
-            ConfigurationNode spyEnabled = rootNode.getNode("messaging", "spy");
-            if (spyEnabled.isVirtual()) {
-                spyEnabled.setValue(false);
-            }
+                ConfigurationNode spyEnabled = rootNode.getNode("messaging", "spy");
+                if (spyEnabled.isVirtual()) {
+                    spyEnabled.setValue(false);
+                }
 
-            // Save
-            configLoader.save(rootNode);
+                // Save
+                configLoader.save(rootNode);
 
-            synchronized (lock) {
                 this.rootNode = rootNode;
                 this.configLoader = configLoader;
+            } catch (Throwable e) {
+                e.printStackTrace();
             }
-        } catch (Throwable e) {
-            e.printStackTrace();
         }
     }
 

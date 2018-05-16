@@ -27,6 +27,11 @@ import com.google.common.collect.ImmutableMap;
 import com.helion3.bedrock.NamedConfiguration;
 import com.helion3.bedrock.util.ConfigurationUtil;
 import com.helion3.bedrock.util.Format;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.service.pagination.PaginationList;
@@ -35,12 +40,6 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class WarpManager {
 

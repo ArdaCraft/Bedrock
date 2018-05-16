@@ -26,6 +26,11 @@ package com.helion3.bedrock.managers;
 import com.helion3.bedrock.Bedrock;
 import com.helion3.bedrock.PlayerConfiguration;
 import com.helion3.bedrock.util.URLUtils;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.WeakHashMap;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -34,8 +39,6 @@ import org.spongepowered.api.text.channel.MessageReceiver;
 import org.spongepowered.api.text.channel.MutableMessageChannel;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
-
-import java.util.*;
 
 public class MessageManager {
 
@@ -48,14 +51,7 @@ public class MessageManager {
      */
     public void clear(CommandSource source) {
         lastSenders.remove(source);
-
-        Iterator<Map.Entry<CommandSource, CommandSource>> iterator = lastSenders.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<CommandSource, CommandSource> entry = iterator.next();
-            if (entry.getValue().equals(source)) {
-                iterator.remove();
-            }
-        }
+        lastSenders.entrySet().removeIf(entry -> entry.getValue().equals(source));
     }
 
     /**

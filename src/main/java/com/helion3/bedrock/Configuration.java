@@ -23,12 +23,11 @@
  */
 package com.helion3.bedrock;
 
+import java.io.File;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
-
-import java.io.File;
 
 public class Configuration {
 

@@ -26,6 +26,9 @@ package com.helion3.bedrock.commands;
 import com.flowpowered.math.vector.Vector3d;
 import com.helion3.bedrock.Bedrock;
 import com.helion3.bedrock.util.Format;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Optional;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.GenericArguments;
@@ -35,10 +38,6 @@ import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.World;
-
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Optional;
 
 public class TeleportCommand {
 

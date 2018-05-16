@@ -25,13 +25,12 @@ package com.helion3.bedrock.util;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.helion3.bedrock.Bedrock;
+import java.util.Map;
+import java.util.Optional;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-
-import java.util.Map;
-import java.util.Optional;
 
 public class ConfigurationUtil {
 
@@ -106,8 +105,8 @@ public class ConfigurationUtil {
                 ConfigurationNode yaw = node.getNode("yaw");
                 if (!pitch.isVirtual() && !yaw.isVirtual()) {
                     // x = pitch, y = yaw, z = roll
-                    Vector3d rotatation = new Vector3d(pitch.getDouble(), yaw.getDouble(), 0D);
-                    Transform<World> transform = new Transform<>(world.get(), position, rotatation);
+                    Vector3d rotation = new Vector3d(pitch.getDouble(), yaw.getDouble(), 0D);
+                    Transform<World> transform = new Transform<>(world.get(), position, rotation);
                     return Optional.of(transform);
                 }
 

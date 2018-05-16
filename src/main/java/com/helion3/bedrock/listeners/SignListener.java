@@ -1,5 +1,7 @@
 package com.helion3.bedrock.listeners;
 
+import java.util.List;
+import java.util.Optional;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
@@ -7,9 +9,6 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.text.Text;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @author dags <dags@dags.me>

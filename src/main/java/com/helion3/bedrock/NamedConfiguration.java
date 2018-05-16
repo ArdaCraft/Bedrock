@@ -23,14 +23,13 @@
  */
 package com.helion3.bedrock;
 
+import java.io.File;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.commented.SimpleCommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
-
-import java.io.File;
 
 public class NamedConfiguration {
 
@@ -54,31 +53,31 @@ public class NamedConfiguration {
     }
 
     private void loadInternal() {
-        try {
-            File conf = new File(Bedrock.getParentDirectory().getAbsolutePath() + "/" + name + ".conf");
-            boolean fileCreated = false;
+        synchronized (lock) {
+            try {
+                File conf = new File(Bedrock.getParentDirectory().getAbsolutePath(), name + ".conf");
+                boolean fileCreated = false;
 
-            if (!conf.exists() && conf.createNewFile()) {
-                fileCreated = true;
-            }
+                if (!conf.exists() && conf.createNewFile()) {
+                    fileCreated = true;
+                }
 
-            HoconConfigurationLoader configLoader = HoconConfigurationLoader.builder().setFile(conf).build();
-            ConfigurationNode rootNode;
-            if (fileCreated) {
-                rootNode = configLoader.createEmptyNode(ConfigurationOptions.defaults());
-            } else {
-                rootNode = configLoader.load();
-            }
+                HoconConfigurationLoader configLoader = HoconConfigurationLoader.builder().setFile(conf).build();
+                ConfigurationNode rootNode;
+                if (fileCreated) {
+                    rootNode = configLoader.createEmptyNode(ConfigurationOptions.defaults());
+                } else {
+                    rootNode = configLoader.load();
+                }
 
-            // Save
-            configLoader.save(rootNode);
+                // Save
+                configLoader.save(rootNode);
 
-            synchronized (lock) {
                 this.rootNode = rootNode;
                 this.configLoader = configLoader;
+            } catch (Throwable e) {
+                e.printStackTrace();
             }
-        } catch (Throwable e) {
-            e.printStackTrace();
         }
     }
 

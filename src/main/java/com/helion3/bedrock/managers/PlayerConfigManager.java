@@ -24,11 +24,10 @@
 package com.helion3.bedrock.managers;
 
 import com.helion3.bedrock.PlayerConfiguration;
-import org.spongepowered.api.entity.living.player.Player;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import org.spongepowered.api.entity.living.player.Player;
 
 public class PlayerConfigManager {
 

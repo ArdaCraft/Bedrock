@@ -26,6 +26,7 @@ package com.helion3.bedrock.commands;
 import com.helion3.bedrock.Bedrock;
 import com.helion3.bedrock.util.ConnectionUtil;
 import com.helion3.bedrock.util.Format;
+import java.time.Instant;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
@@ -61,6 +62,9 @@ public class WhoisCommand {
 
                     double health = player.get(Keys.HEALTH).orElse(-1D);
                     source.sendMessage(Format.message(String.format("Health: %f", health)));
+
+                    Instant instant = player.lastPlayed().get();
+                    source.sendMessage(Format.message(String.format("Last played: %s", instant)));
 
                     return CommandResult.success();
                 }).build();

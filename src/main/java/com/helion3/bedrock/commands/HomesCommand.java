@@ -27,6 +27,8 @@ import com.helion3.bedrock.Bedrock;
 import com.helion3.bedrock.PlayerConfiguration;
 import com.helion3.bedrock.util.ConfigurationUtil;
 import com.helion3.bedrock.util.Format;
+import java.util.ArrayList;
+import java.util.Optional;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.GenericArguments;
@@ -38,9 +40,6 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-
-import java.util.ArrayList;
-import java.util.Optional;
 
 public class HomesCommand {
 
