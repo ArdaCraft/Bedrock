@@ -23,7 +23,15 @@
  */
 package com.helion3.bedrock;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.Callable;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -62,7 +70,11 @@ public class NamedConfiguration {
                     fileCreated = true;
                 }
 
-                HoconConfigurationLoader configLoader = HoconConfigurationLoader.builder().setFile(conf).build();
+                HoconConfigurationLoader configLoader = HoconConfigurationLoader.builder()
+                        .setSource(reader(conf))
+                        .setSink(writer(conf))
+                        .build();
+
                 ConfigurationNode rootNode;
                 if (fileCreated) {
                     rootNode = configLoader.createEmptyNode(ConfigurationOptions.defaults());
@@ -116,5 +128,13 @@ public class NamedConfiguration {
         synchronized (lock) {
             return rootNode.getNode(path);
         }
+    }
+
+    private static Callable<BufferedReader> reader(File file) {
+        return () -> new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+    }
+
+    private static Callable<BufferedWriter> writer(File file) {
+        return () -> new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
     }
 }
