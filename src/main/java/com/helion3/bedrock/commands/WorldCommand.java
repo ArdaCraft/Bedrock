@@ -23,10 +23,6 @@
  */
 package com.helion3.bedrock.commands;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import java.util.List;
-import org.spongepowered.api.command.CommandCallable;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.spec.CommandSpec;
 
@@ -36,11 +32,9 @@ public class WorldCommand {
     }
 
     public static CommandSpec getCommand() {
-        ImmutableMap.Builder<List<String>, CommandCallable> builder = ImmutableMap.<List<String>, CommandCallable>builder();
-        builder.put(ImmutableList.of("difficulty"), DifficultyCommand.getCommand());
-
-        return CommandSpec.builder().executor((src, args) -> {
-            return CommandResult.empty();
-        }).children(builder.build()).build();
+        return CommandSpec.builder().executor((src, args) -> CommandResult.empty())
+                .child(DifficultyCommand.getCommand(), "difficulty", "dif")
+                .child(WorldLoad.getCommand(), "load")
+                .build();
     }
 }
