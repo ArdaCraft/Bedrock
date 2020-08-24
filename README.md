@@ -1,4 +1,4 @@
-# Bedrock [![Build Status](https://api.travis-ci.org/prism/Bedrock.png)](https://travis-ci.org/prism/Bedrock/)
+# Bedrock [![Build Status](https://api.travis-ci.com/ArdaCraft/Bedrock.png)](https://travis-ci.com/github/ArdaCraft/Bedrock/)
 
 Essential commands for Sponge-based Minecraft servers.
 
